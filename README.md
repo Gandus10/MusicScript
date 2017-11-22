@@ -18,8 +18,9 @@ DO
 RE
 MI
 FA
-etc
 ```
+
+...
 
 ## Documentation
 
