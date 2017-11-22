@@ -14,11 +14,11 @@ Program who convert text to music.
 - text document :
 
 ```
-	DO
-	RE
-	MI
-	FA
-	etc
+DO
+RE
+MI
+FA
+etc
 ```
 
 ## Documentation
@@ -26,3 +26,4 @@ Program who convert text to music.
 - http://www.shikadi.net/moddingwiki/MID_Format
 - https://www.wavosaur.com/download/midi-note-hex.php
 - http://acad.carleton.edu/courses/musc108-00-f14/pages/04/04StandardMIDIFiles.html
+- http://www.ccarh.org/courses/253/handout/smf/
