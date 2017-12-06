@@ -6,6 +6,7 @@ Program who convert text to music.
 - function note(int time)
 - loop to play a note several times or a note sequence
 - function silence(int time)
+- assign track to var to be reused
 
 ## Input/Output
 - Input = text file
@@ -32,6 +33,8 @@ Track (
 	FA
 	MI
 )
+
+my_tune = Track
 ```
 
 - mid file
