@@ -3,41 +3,54 @@
 Program who convert text to music.
 
 ## Functionality
-- function note(int time)
-- loop to play a note several times or a note sequence
-- function silence(int time)
+- function note, ex : DO
+- loop to play a note several times or a note sequence, ex : loop(10){...}
+- function silence, ex : silence = 12
 - assign track to var to be reused
 
 ## Input/Output
-- Input = text file
-- Output = mid file
+- Input = text file (.mus)
+- Output = MIDI file (.mid)
 
-## Exemple
+## Example
 - text file :
 
 ```
-Track (
-	instrument = violon;
-	tempo = 1;
-	DO;
-	RE;
-	MI;
-	FA;
-)
+track (
+    violon;
+    tempo = 1;
+    DO;
+    RE;
+    RE;
+    LA;
+);
 
-Track (
-	instrument = guitare;
-	tempo = 1;
-	RE;
-	DO;
-	FA;
-	MI;
-)
+track (
+    guitar;
+    tempo = 2;
+    LA;
+    SI;
+    MI;
+    SI;
+    LA;
+    silence = 2;
+);
 
-my_tune = Track
+my_tune =  track (
+    piano;
+    tempo = 2;
+    LA;
+    LA;
+    SOL;
+    LA;
+);
+
+loop(10) {
+    my_tune;
+}
 ```
 
-- mid file
+- MIDI file (not corresponding)
 
 ```
 4d 54 68 64 00 00 00 06 00 01 00 01 01 e0 4d 54
@@ -57,7 +70,11 @@ my_tune = Track
 - http://acad.carleton.edu/courses/musc108-00-f14/pages/04/04StandardMIDIFiles.html
 
 
-## Eleves
+## Authors
 - Piquerez Thibaut
 - Renaud Sylvain
 - Gander Laurent
+
+
+## Grammar
+TODO
