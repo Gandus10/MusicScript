@@ -17,21 +17,21 @@ Program who convert text to music.
 
 ```
 Track (
-	instrument = 'violon'
-	tempo = 1
-	DO
-	RE
-	MI
-	FA
+	instrument = violon;
+	tempo = 1;
+	DO;
+	RE;
+	MI;
+	FA;
 )
 
 Track (
-	instrument = 'guitare'
-	tempo = 1
-	RE
-	DO
-	FA
-	MI
+	instrument = guitare;
+	tempo = 1;
+	RE;
+	DO;
+	FA;
+	MI;
 )
 
 my_tune = Track

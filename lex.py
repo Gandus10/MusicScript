@@ -1,34 +1,47 @@
 import ply.lex as lex
 
 reserved_words = (
-    'while',
-    'print'
+    'silence',
+    'loop',
+    'violin',
+    'guitar',
+    'piano',
+    'instrument',
+    'tempo',
+    'do',
+    're',
+    'mi',
+    'fa',
+    'sol',
+    'la',
+    'si'
 )
 
 tokens = (
              'NUMBER',
-             'ADD_OP',
-             'MUL_OP',
              'IDENTIFIER',
+             'NOTE',
+             'INSTRUMENT'
+
          ) + tuple(map(lambda s: s.upper(), reserved_words))
 
-literals = '();={}'
+literals = '();='
 
 
-def t_ADD_OP(t):
-    r'[+-]'
+def t_INSTRUMENT(t):
+    r'(guitar)|(violon)|(piano)'
     return t
 
 
-def t_MUL_OP(t):
-    r'[*/]'
+def t_NOTE(t):
+    r'(DO)|(RE)|(MI)|(FA)|(SOL)|(LA)|(SI)'
     return t
 
 
 def t_NUMBER(t):
-    r'\d+(\.\d+)?'
+    r'\d'
     try:
-        t.value = float(t.value)
+        t.value = int(t.value)
     except ValueError:
         print("Line %d: Problem while parsing %s!" % (t.lineno, t.value))
         t.value = 0
