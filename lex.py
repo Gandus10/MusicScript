@@ -1,12 +1,12 @@
 import ply.lex as lex
 
 reserved_words = (
+    'track',
     'silence',
     'loop',
     'violin',
     'guitar',
     'piano',
-    'instrument',
     'tempo',
     'do',
     're',
@@ -22,10 +22,9 @@ tokens = (
              'IDENTIFIER',
              'NOTE',
              'INSTRUMENT'
-
          ) + tuple(map(lambda s: s.upper(), reserved_words))
 
-literals = '();='
+literals = '(){};='
 
 
 def t_INSTRUMENT(t):

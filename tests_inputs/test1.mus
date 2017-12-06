@@ -1,27 +1,32 @@
-Track (
+track (
     violon;
     tempo = 1;
-    DO
-    RE
-    RE
-    LA
+    DO;
+    RE;
+    RE;
+    LA;
 );
 
-Track (
+track (
     guitar;
-    tempo = 1;
+    tempo = 2;
     LA;
     SI;
     MI;
     SI;
     LA;
+    silence = 2;
 );
 
-my_tune = Track (
+my_tune =  track (
     piano;
-    tempo = 1;
+    tempo = 2;
     LA;
     LA;
     SOL;
     LA;
 );
+
+loop(10) {
+    my_tune;
+}
