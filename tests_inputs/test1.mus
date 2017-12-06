@@ -1,0 +1,27 @@
+Track (
+    violon;
+    tempo = 1;
+    DO
+    RE
+    RE
+    LA
+);
+
+Track (
+    guitar;
+    tempo = 1;
+    LA;
+    SI;
+    MI;
+    SI;
+    LA;
+);
+
+my_tune = Track (
+    piano;
+    tempo = 1;
+    LA;
+    LA;
+    SOL;
+    LA;
+);
