@@ -10,7 +10,7 @@ def thread(self, lastNode):
     return self
 
 
-@addToClass(AST.WhileNode)
+@addToClass(AST.LoopNode)
 def thread(self, lastNode):
     beforeCond = lastNode
     exitCond = self.children[0].thread(lastNode)

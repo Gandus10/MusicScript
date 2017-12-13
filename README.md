@@ -36,18 +36,18 @@ track (
     silence = 2;
 );
 
-my_tune =  track (
+
+my_tune = (LA;DO;RE);
+
+track (
     piano;
     tempo = 2;
-    LA;
-    LA;
+    loop 5 {
+        my_tune;
+    }
     SOL;
-    LA;
+    SOL;
 );
-
-loop(10) {
-    my_tune;
-}
 ```
 
 - MIDI file (not corresponding)
@@ -62,6 +62,27 @@ loop(10) {
 ```
 
 
+## Grammar
+
+```
+song : partition
+song : partition ';' song
+partition : track | assignation
+track : '(' instruction ')'
+instruction : statement ';' instruction
+instruction : statement
+statement : silence | tempo | NOTE | INSTRUMENT | structure
+structure : LOOP NUMBER '{' chansonnette '}'
+chansonnette : expression
+chansonnette : expression ';' chansonnette
+expression : IDENTIFIER | group | silence
+assignation : IDENTIFIER '=' '(' group ')'
+group : NOTE
+group : NOTE ';' group
+tempo : TEMPO '=' NUMBER
+silence : SILENCE '=' NUMBER
+```
+
 ## Documentation
 
 - http://www.shikadi.net/moddingwiki/MID_Format
@@ -75,6 +96,3 @@ loop(10) {
 - Renaud Sylvain
 - Gander Laurent
 
-
-## Grammar
-TODO

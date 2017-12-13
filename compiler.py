@@ -16,7 +16,7 @@ operations = {
 }
 
 
-@addToClass(AST.ProgramNode)
+@addToClass(AST.SongNode)
 def compile(self):
     bytecode = ""
     for c in self.children:
@@ -65,7 +65,7 @@ def compile(self):
 
 # def whilecounter():
 
-@addToClass(AST.WhileNode)
+@addToClass(AST.LoopNode)
 def compile(self):
     bytecode = ""
     # whilecpt += 1

@@ -95,8 +95,8 @@ class Node:
         return graph
 
 
-class ProgramNode(Node):
-    type = 'Program'
+class SongNode(Node):
+    type = 'song'
 
 
 class TokenNode(Node):
@@ -110,29 +110,24 @@ class TokenNode(Node):
         return repr(self.tok)
 
 
-class OpNode(Node):
-    def __init__(self, op, children):
-        Node.__init__(self, children)
-        self.op = op
-        try:
-            self.nbargs = len(children)
-        except AttributeError:
-            self.nbargs = 1
-
-    def __repr__(self):
-        return "%s (%s)" % (self.op, self.nbargs)
+class TrackNode(Node):
+    type = 'track'
 
 
 class AssignNode(Node):
     type = '='
 
 
-class PrintNode(Node):
-    type = 'print'
+class TempoNode(Node):
+    type = '='
 
 
-class WhileNode(Node):
-    type = 'while'
+class SilenceNode(Node):
+    type = '='
+
+
+class LoopNode(Node):
+    type = 'loop'
 
 
 class EntryNode(Node):
