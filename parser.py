@@ -80,11 +80,11 @@ def p_expression(p):
 
 def p_assignation(p):
     ''' assignation : IDENTIFIER '=' '(' group ')' '''
-    p[0] = AST.AssignNode([AST.TokenNode(p[1]), p[3]])
+    p[0] = AST.AssignNode([AST.TokenNode(p[1]), p[4]])
 
 
 def p_group_recursive(p):
-    ''' group : NOTE ';' group '''
+    ''' group : NOTE ',' group'''
     p[0] = [AST.TokenNode(p[1])] + p[3].children
 
 

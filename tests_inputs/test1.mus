@@ -1,32 +1,31 @@
 track (
     violon;
-    TEMPO = 1;
+    tempo = 1;
     DO;
     RE;
     RE;
-    LA;
+    LA
 );
 
 track(
     guitar;
-    TEMPO = 2;
+    tempo = 2;
     LA;
     SI;
     MI;
     SI;
     LA;
-    SILENCE = 2;
+    silence = 2
 );
 
-
-my_tune = (LA;DO;RE);
+my_tune = (LA,DO,RE);
 
 track (
     piano;
-    TEMPO = 2;
+    tempo = 2;
     loop 5 {
         my_tune;
     }
     SOL;
-    SOL;
+    SOL
 );

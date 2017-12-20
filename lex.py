@@ -24,7 +24,7 @@ tokens = (
              'INSTRUMENT'
          ) + tuple(map(lambda s: s.upper(), reserved_words))
 
-literals = '(){};='
+literals = '(){};=,'
 
 
 def t_INSTRUMENT(t):
