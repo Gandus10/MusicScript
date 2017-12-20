@@ -24,11 +24,11 @@ tokens = (
              'INSTRUMENT'
          ) + tuple(map(lambda s: s.upper(), reserved_words))
 
-literals = '(){};='
+literals = '(){};=,'
 
 
 def t_INSTRUMENT(t):
-    r'(guitar)|(violon)|(piano)'
+    r'(GUITAR)|(VIOLIN)|(PIANO)'
     return t
 
 
@@ -38,7 +38,7 @@ def t_NOTE(t):
 
 
 def t_NUMBER(t):
-    r'\d'
+    r'\d+'
     try:
         t.value = int(t.value)
     except ValueError:

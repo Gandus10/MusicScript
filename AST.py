@@ -99,6 +99,10 @@ class SongNode(Node):
     type = 'song'
 
 
+class InstructionNode(Node):
+    type = 'instruction'
+
+
 class TokenNode(Node):
     type = 'token'
 
@@ -114,16 +118,20 @@ class TrackNode(Node):
     type = 'track'
 
 
+class ChansonnetteNode(Node):
+    type = 'chansonnette'
+
+
 class AssignNode(Node):
     type = '='
 
 
 class TempoNode(Node):
-    type = '='
+    type = 'TEMPO'
 
 
 class SilenceNode(Node):
-    type = '='
+    type = 'SILENCE'
 
 
 class LoopNode(Node):

@@ -1,3 +1,25 @@
 track (
-    do;
+    VIOLIN;
+    SOL;
+    DO
+);
+
+track (
+    tempo = 29;
+    DO
+);
+
+track (
+    silence = 2
+);
+
+track (
+    loop 2 {
+        DO;
+        RE;
+        silence = 4;
+        loop 89 {
+            DO
+        }
+    }
 )
