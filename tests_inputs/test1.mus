@@ -1,5 +1,5 @@
 track (
-    violon;
+    VIOLIN;
     tempo = 1;
     DO;
     RE;
@@ -8,7 +8,7 @@ track (
 );
 
 track(
-    guitar;
+    GUITAR;
     tempo = 2;
     LA;
     SI;
@@ -21,11 +21,11 @@ track(
 my_tune = (LA,DO,RE);
 
 track (
-    piano;
+    PIANO;
     tempo = 2;
     loop 5 {
         my_tune;
-    }
+    };
     SOL;
     SOL
-);
+)

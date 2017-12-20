@@ -17,37 +17,30 @@ Program who convert text to music.
 
 ```
 track (
-    violon;
-    tempo = 1;
-    DO;
-    RE;
-    RE;
-    LA;
+    VIOLIN;
+    SOL;
+    DO
 );
 
 track (
-    guitar;
-    tempo = 2;
-    LA;
-    SI;
-    MI;
-    SI;
-    LA;
-    silence = 2;
+    tempo = 29;
+    DO
 );
 
-
-my_tune = (LA;DO;RE);
+track (
+    silence = 2
+);
 
 track (
-    piano;
-    tempo = 2;
-    loop 5 {
-        my_tune;
+    loop 2 {
+        DO;
+        RE;
+        silence = 4;
+        loop 89 {
+            DO
+        }
     }
-    SOL;
-    SOL;
-);
+)
 ```
 
 - MIDI file (not corresponding)
@@ -68,19 +61,21 @@ track (
 song : partition
 song : partition ';' song
 partition : track | assignation
-track : '(' instruction ')'
+track : TRACK '(' instruction ')'
 instruction : statement ';' instruction
 instruction : statement
-statement : silence | tempo | NOTE | INSTRUMENT | structure
+statement : silence | tempo | note | instrument | structure
 structure : LOOP NUMBER '{' chansonnette '}'
 chansonnette : expression
 chansonnette : expression ';' chansonnette
-expression : IDENTIFIER | group | silence
+expression : IDENTIFIER | group | silence | structure
 assignation : IDENTIFIER '=' '(' group ')'
 group : NOTE
 group : NOTE ';' group
 tempo : TEMPO '=' NUMBER
 silence : SILENCE '=' NUMBER
+note : NOTE
+instrument : INSTRUMENT
 ```
 
 ## Documentation
