@@ -1,3 +1,32 @@
 track (
-    tempo = 3
+    VIOLIN;
+    tempo = 1;
+    DO;
+    RE;
+    RE;
+    LA
+);
+
+track(
+    GUITAR;
+    tempo = 2;
+    LA;
+    SI;
+    MI;
+    SI;
+    LA;
+    silence = 2
+);
+
+my_tune = (LA,DO,RE);
+
+track (
+    PIANO;
+    tempo = 2;
+    loop 5 {
+        my_tune;
+    };
+    SOL;
+    SOL
 )
+

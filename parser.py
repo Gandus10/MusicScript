@@ -24,26 +24,25 @@ def p_partition(p):
 
 def p_track(p):
     ''' track : TRACK '(' instruction ')' '''
-    p[0] = AST.TrackNode(p[3])
-
-
-def p_instruction_recursive(p):
-    ''' instruction : statement ';' instruction '''
-    p[0] = [p[1]] + p[3].children
+    p[0] = AST.TrackNode(p[3].children)
 
 
 def p_instruction_statement(p):
-    ''' instruction : statement '''
-    p[0] = p[1]
+    ''' instruction : statement
+        | statement ';' instruction '''
+    try:
+        p[0] = AST.InstructionNode([p[1]] + p[3].children)
+    except:
+        p[0] = AST.InstructionNode(p[1])
 
 
 def p_statement(p):
     ''' statement : silence
         | tempo
-        | NOTE
-        | INSTRUMENT
+        | note
+        | instrument
         | structure '''
-    if p[1] == 'NOTE' or p[1] == 'INSTRUMENT':
+    if p[1] == 'note' or p[1] == 'instrument':
         p[0] = AST.TokenNode(p[1])
     elif p[1] == 'silence':
         p[0] = p[1]
@@ -59,19 +58,19 @@ def p_structure(p):
 
 
 def p_chansonnette_recursive(p):
-    ''' chansonnette : expression ';' chansonnette '''
-    p[0] = [p[1]] + p[3].children
-
-
-def p_chansonnette_expression(p):
-    ''' chansonnette : expression '''
-    p[0] = p[1]
+    ''' chansonnette : expression
+        | expression ';' chansonnette '''
+    try:
+        p[0] = AST.ChansonnetteNode([p[1]] + p[3].children)
+    except:
+        p[0] = AST.ChansonnetteNode(p[1])
 
 
 def p_expression(p):
     ''' expression : IDENTIFIER
         | group
-        | silence '''
+        | silence
+        | structure '''
     if p[1] == 'IDENTIFIER':
         p[0] = AST.TokenNode(p[1])
     else:
@@ -84,12 +83,12 @@ def p_assignation(p):
 
 
 def p_group_recursive(p):
-    ''' group : NOTE ',' group'''
-    p[0] = [AST.TokenNode(p[1])] + p[3].children
+    ''' group : note ',' group'''
+    p[0] = AST.TokenNode([p[1]] + p[3].children)
 
 
 def p_group_note(p):
-    ''' group : NOTE '''
+    ''' group : note '''
     p[0] = AST.TokenNode(p[1])
 
 
@@ -101,6 +100,16 @@ def p_tempo(p):
 def p_silence(p):
     ''' silence : SILENCE '=' NUMBER '''
     p[0] = AST.SilenceNode(AST.TokenNode(p[3]))
+
+
+def p_note(p):
+    ''' note : NOTE '''
+    p[0] = AST.TokenNode(p[1])
+
+
+def p_instrument(p):
+    '''instrument : INSTRUMENT'''
+    p[0] = AST.TokenNode(p[1])
 
 
 # ------------------EXAMPLE--------------------
