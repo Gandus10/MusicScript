@@ -1,7 +1,16 @@
 import AST
 from AST import addToClass
 
+endnote = '40'
 notes = {
+
+    'DO': '60' + endnote,
+    'RE': '62' + endnote,
+    'MI': '64' + endnote,
+    'FA': '65' + endnote,
+    'SOL': '67' + endnote,
+    'LA': '69' + endnote,
+    'DO': '71' + endnote
 
 }
 
