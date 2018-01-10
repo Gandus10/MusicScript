@@ -68,13 +68,10 @@ def p_chansonnette_recursive(p):
 
 def p_expression(p):
     ''' expression : IDENTIFIER
-        | group
+        | note
         | silence
         | structure '''
-    if p[1] == 'IDENTIFIER':
-        p[0] = AST.TokenNode(p[1])
-    else:
-        p[0] = p[1]
+    p[0] = AST.TokenNode(p[1])
 
 
 def p_assignation(p):
@@ -84,12 +81,12 @@ def p_assignation(p):
 
 def p_group_recursive(p):
     ''' group : note ',' group'''
-    p[0] = AST.TokenNode([p[1]] + p[3].children)
+    p[0] = AST.ChansonnetteNode([p[1]] + p[3].children)
 
 
 def p_group_note(p):
     ''' group : note '''
-    p[0] = AST.TokenNode(p[1])
+    p[0] = AST.ChansonnetteNode(p[1])
 
 
 def p_tempo(p):
@@ -109,7 +106,7 @@ def p_note(p):
 
 def p_instrument(p):
     '''instrument : INSTRUMENT'''
-    p[0] = AST.TokenNode(p[1])
+    p[0] = AST.InstrumentNode(AST.TokenNode(p[1]))
 
 
 # ------------------EXAMPLE--------------------

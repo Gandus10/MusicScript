@@ -1,6 +1,7 @@
 import AST
 from AST import addToClass
 
+
 # operations = {
 #     '+': lambda x, y: x + y,
 #     '-': lambda x, y: x - y,
@@ -8,19 +9,25 @@ from AST import addToClass
 #     '/': lambda x, y: x / y,
 # }
 
-operations = {
-    '+': 'ADD\n',
-    '-': 'SUB\n',
-    '*': 'MUL\n',
-    '/': 'DIV\n'
+# operations = {
+#     '+': 'ADD\n',
+#     '-': 'SUB\n',
+#     '*': 'MUL\n',
+#     '/': 'DIV\n'
+# }
+
+notes = {
+    'SOL': 'AF556',
+
 }
+
 
 
 @addToClass(AST.SongNode)
 def compile(self):
     bytecode = ""
     for c in self.children:
-        bytecode += c.compile()
+        bytecode += (c.compile())
     return bytecode
 
 
@@ -72,7 +79,7 @@ def compile(self):
 
 
 if __name__ == "__main__":
-    from parser import parse
+    from music_parser import parse
     import sys, os
 
     prog = open(sys.argv[1]).read()
