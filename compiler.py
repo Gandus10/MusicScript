@@ -1,20 +1,6 @@
 import AST
 from AST import addToClass
 
-# operations = {
-#     '+': lambda x, y: x + y,
-#     '-': lambda x, y: x - y,
-#     '*': lambda x, y: x * y,
-#     '/': lambda x, y: x / y,
-# }
-
-# operations = {
-#     '+': 'ADD\n',
-#     '-': 'SUB\n',
-#     '*': 'MUL\n',
-#     '/': 'DIV\n'
-# }
-
 notes = {
 
 }
