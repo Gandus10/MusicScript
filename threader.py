@@ -27,7 +27,7 @@ def thread(tree):
 
 
 if __name__ == "__main__":
-    from parser import parse
+    from music_parser import parse
     import sys, os
 
     prog = open(sys.argv[1]).read()
