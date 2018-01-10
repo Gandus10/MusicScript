@@ -16,11 +16,16 @@ from AST import addToClass
 #     '/': 'DIV\n'
 # }
 
+endnote = 40
 notes = {
-    'SOL': 'AF556',
-
+    'DO': '60' + endnote,
+    'RE': '62' + endnote,
+    'MI': '64' + endnote,
+    'FA': '65' + endnote,
+    'SOL': '67' + endnote,
+    'LA': '69' + endnote,
+    'DO': '71' + endnote
 }
-
 
 
 @addToClass(AST.SongNode)
