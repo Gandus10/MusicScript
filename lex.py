@@ -7,6 +7,7 @@ reserved_words = (
     'violin',
     'guitar',
     'piano',
+    'flute'
     'tempo',
     'do',
     're',
