@@ -15,10 +15,10 @@ track (
     FLUTE;
     tempo = 2;
     loop 5 {
-        FA;
         SOL;
-        my_tune;
-        FA
+        FA;
+        FA;
+        my_tune
     };
     SOL;
     SOL

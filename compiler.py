@@ -39,7 +39,7 @@ NOTES = {
 }
 
 INSTRUMENTS = {
-    'FLUTE': "c049"
+    'FLUTE': 'c049'
 }
 
 vars = {}
@@ -73,7 +73,8 @@ def compile(self):
 @addToClass(AST.InstrumentNode)
 def compile(self):
     """Definit l'instrument pour la track."""
-    vars['instrument'] = INSTRUMENTS[self.tok]
+    # print(self.tok, INSTRUMENTS)
+    vars['instrument'] = INSTRUMENTS[self.instrument.tok]
     return ""
 
 
@@ -82,6 +83,7 @@ def compile(self):
     """Ecrit la valeur hexa de la note. NON + NOF + Delta time."""
     bytecode = ""
     # Récupération de l'hexa dans le dict de notes
+    print(self.tok)
     bytecode += DELTA_TIME_ZERO + NON + NOTES[self.tok] + END_NOTE_40 + \
                 DELTA_TIME_DEFAULT + NOF + NOTES[self.tok] + END_NOTE_ZERO
     return bytecode
@@ -90,9 +92,16 @@ def compile(self):
 @addToClass(AST.AssignNode)
 def compile(self):
     """Sauvegarde de la valeur dans le dict vars."""
+    vars[self.children[0].tok] = self.children[1].compile()
+    return ""
+
+
+@addToClass(AST.ChansonnetteNode)
+def compile(self):
+    """Compile une chansonnette (ensemble de notes)."""
     bytecode = ""
-    bytecode += self.children[1].compile()
-    bytecode += f"SET {self.children[0].tok}\n"
+    for c in self.children:
+        bytecode += c.compile()
     return bytecode
 
 
@@ -100,7 +109,9 @@ def compile(self):
 def compile(self):
     """Ecrit x fois ses enfants."""
     bytecode = ""
-    # whilecpt += 1
+    for _ in range(0, int(self.children[0].tok)):
+        bytecode += self.children[1].compile()
+    return bytecode
 
 
 @addToClass(AST.TrackNode)
@@ -120,13 +131,13 @@ def compile(self):
 @addToClass(AST.SilenceNode)
 def compile(self):
     """Ecrit un silence."""
-    pass
+    return ""
 
 
 @addToClass(AST.TempoNode)
 def compile(self):
     """Définit le tempo."""
-    pass
+    return ""
 
 
 # @addToClass(AST.OpNode)

@@ -7,7 +7,7 @@ reserved_words = (
     'violin',
     'guitar',
     'piano',
-    'flute'
+    'flute',
     'tempo',
     'do',
     're',
@@ -29,7 +29,7 @@ literals = '(){};=,'
 
 
 def t_INSTRUMENT(t):
-    r'(GUITAR)|(VIOLIN)|(PIANO)'
+    r'(GUITAR)|(VIOLIN)|(PIANO)|(FLUTE)'
     return t
 
 
