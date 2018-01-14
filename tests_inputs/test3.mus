@@ -2,8 +2,8 @@ up = (DO,RE,MI,FA,SOL,LA,SI);
 down = (SI,LA,SOL,FA,MI,RE,DO);
 
 track (
-    FLUTE;
-    loop 3 {
+    PIANO;
+    loop 2 {
         up;
         down
     }
