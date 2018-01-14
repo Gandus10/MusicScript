@@ -59,12 +59,16 @@ def p_chansonnette_recursive(p):
         p[0] = AST.ChansonnetteNode(p[1])
 
 
+def p_expression_identifier(p):
+    ''' expression : IDENTIFIER'''
+    p[0] = AST.TokenNode(p[1])
+
+
 def p_expression(p):
-    ''' expression : IDENTIFIER
-        | note
+    ''' expression : note
         | silence
         | structure '''
-    #p[0] = AST.TokenNode(p[1])
+    # p[0] = AST.TokenNode(p[1])
     p[0] = p[1]
 
 

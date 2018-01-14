@@ -70,13 +70,11 @@ def compile(self):
     # bytecode += TEMPO_TRACK
     track_counter = 0
     for c in self.children:
-        print(c.type)
         if c.type == 'TRACK':
             track_counter += 1
         bytecode += c.compile()
 
     length = "00000006"  # length of header is 6
-    print(track_counter)
     nb_track = int_to_hex(track_counter, 2)
 
     bytecode = MTHD + length + SMF + nb_track + PPQ + bytecode
@@ -100,8 +98,12 @@ def compile(self):
         print('TOKEN NODE', self.tok)
     bytecode = ""
     # Récupération de l'hexa dans le dict de notes
-    bytecode += DELTA_TIME_ZERO + NON + NOTES[self.tok] + END_NOTE_48 + \
-                DELTA_TIME_DEFAULT + NOF + NOTES[self.tok] + END_NOTE_ZERO
+    try:
+        note = NOTES[self.tok]
+        bytecode += DELTA_TIME_ZERO + NON + note + END_NOTE_48 + \
+                    DELTA_TIME_DEFAULT + NOF + note + END_NOTE_ZERO
+    except:
+        bytecode += vars[self.tok]
     return bytecode
 
 

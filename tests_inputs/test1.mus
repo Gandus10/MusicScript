@@ -9,15 +9,12 @@ track(
     silence = 2
 );
 
-my_tune = (LA,DO,RE,MI,FA);
+my_tune = (DO,RE,MI,FA,SOL,LA,SI);
 
 track (
     FLUTE;
     tempo = 2;
     loop 5 {
-        SOL;
-        FA;
-        FA;
         my_tune
     };
     SOL;
