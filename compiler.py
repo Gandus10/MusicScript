@@ -1,18 +1,27 @@
 import AST
+import binascii
 from AST import addToClass
 
+DEBUG = False;
 MTHD = "4d546864"
 MTRK = "4d54726b"
+END_OF_TRACK = "ff2f00"
 SMF = "0001"
 PPQ = "01e0"
 
-META_EVENT = "ff030120"
-END_OF_TRACK = "ff2f00"
-NON = "90"
-NOF = "80"
 DELTA_TIME_ZERO = "00"
 DELTA_TIME_DEFAULT = "8170"
 DELTA_TIME_ONE = "01"
+
+TEMPO_TRACK = MTRK + '00000019' + \
+              DELTA_TIME_ZERO + 'FF580404021808' + \
+              DELTA_TIME_ZERO + 'FF59020200' + \
+              DELTA_TIME_ZERO + 'FF51030F4240' + \
+              DELTA_TIME_ONE + END_OF_TRACK
+
+META_EVENT = "ff030120"
+NON = "90"
+NOF = "80"
 
 RESET_ALL_CONTROLLER = "b07900"
 PEDAL_OFF = "b04000"
@@ -25,17 +34,17 @@ CONTROLLERS = DELTA_TIME_ZERO + RESET_ALL_CONTROLLER + \
               DELTA_TIME_ZERO + STEREO_PAN + \
               DELTA_TIME_ZERO + VOLUME
 
-END_NOTE_40 = "40"
+END_NOTE_48 = "48"
 END_NOTE_ZERO = "00"
 
 NOTES = {
-    'DO': '60',
-    'RE': '62',
-    'MI': '64',
-    'FA': '65',
-    'SOL': '67',
-    'LA': '69',
-    'SI': '71'
+    'DO': '3c',
+    'RE': '3e',
+    'MI': '40',
+    'FA': '42',
+    'SOL': '44',
+    'LA': '46',
+    'SI': '48'
 }
 
 INSTRUMENTS = {
@@ -45,10 +54,9 @@ INSTRUMENTS = {
 vars = {}
 
 
-def int_to_hex(val, nb_byte):
-    size = int(val / 2)
-    hexsize = hex(size)[2:]
-    while (len(hexsize) < nb_byte * 2):
+def int_to_hex(val, nb_bytes_desired):
+    hexsize = hex(val)[2:]
+    while (len(hexsize) < nb_bytes_desired * 2):
         hexsize = '0' + hexsize
     return hexsize
 
@@ -56,14 +64,19 @@ def int_to_hex(val, nb_byte):
 @addToClass(AST.SongNode)
 def compile(self):
     """Ecrit en-tete du fichier avec calcul de la taille."""
+    if DEBUG:
+        print('SONG NODE')
     bytecode = ""
+    # bytecode += TEMPO_TRACK
     track_counter = 0
     for c in self.children:
-        if c is AST.TrackNode:
+        print(c.type)
+        if c.type == 'TRACK':
             track_counter += 1
         bytecode += c.compile()
 
-    length = int_to_hex(len(bytecode), 4)
+    length = "00000006"  # length of header is 6
+    print(track_counter)
     nb_track = int_to_hex(track_counter, 2)
 
     bytecode = MTHD + length + SMF + nb_track + PPQ + bytecode
@@ -72,6 +85,8 @@ def compile(self):
 
 @addToClass(AST.InstrumentNode)
 def compile(self):
+    if DEBUG:
+        print('INSTRU NODE')
     """Definit l'instrument pour la track."""
     # print(self.tok, INSTRUMENTS)
     vars['instrument'] = INSTRUMENTS[self.instrument.tok]
@@ -81,10 +96,11 @@ def compile(self):
 @addToClass(AST.TokenNode)
 def compile(self):
     """Ecrit la valeur hexa de la note. NON + NOF + Delta time."""
+    if DEBUG:
+        print('TOKEN NODE', self.tok)
     bytecode = ""
     # Récupération de l'hexa dans le dict de notes
-    print(self.tok)
-    bytecode += DELTA_TIME_ZERO + NON + NOTES[self.tok] + END_NOTE_40 + \
+    bytecode += DELTA_TIME_ZERO + NON + NOTES[self.tok] + END_NOTE_48 + \
                 DELTA_TIME_DEFAULT + NOF + NOTES[self.tok] + END_NOTE_ZERO
     return bytecode
 
@@ -92,6 +108,8 @@ def compile(self):
 @addToClass(AST.AssignNode)
 def compile(self):
     """Sauvegarde de la valeur dans le dict vars."""
+    if DEBUG:
+        print('ASSIGN NODE')
     vars[self.children[0].tok] = self.children[1].compile()
     return ""
 
@@ -99,6 +117,8 @@ def compile(self):
 @addToClass(AST.ChansonnetteNode)
 def compile(self):
     """Compile une chansonnette (ensemble de notes)."""
+    if DEBUG:
+        print('CHANSONNETTE NODE')
     bytecode = ""
     for c in self.children:
         bytecode += c.compile()
@@ -108,6 +128,8 @@ def compile(self):
 @addToClass(AST.LoopNode)
 def compile(self):
     """Ecrit x fois ses enfants."""
+    if DEBUG:
+        print('LOOP NODE')
     bytecode = ""
     for _ in range(0, int(self.children[0].tok)):
         bytecode += self.children[1].compile()
@@ -117,26 +139,34 @@ def compile(self):
 @addToClass(AST.TrackNode)
 def compile(self):
     """Ecrit une track avec son header et calcul de la taille."""
+    if DEBUG:
+        print('TRACK NODE')
     bytecode = ""
     for c in self.children:
         bytecode += c.compile()
-    length = int_to_hex(len(bytecode), 4)
-    bytecode = MTRK + length + DELTA_TIME_ZERO + vars['instrument'] + \
+
+    bytecode = DELTA_TIME_ZERO + vars['instrument'] + \
                CONTROLLERS + DELTA_TIME_ZERO + META_EVENT + bytecode + \
                DELTA_TIME_ONE + END_OF_TRACK
 
+    length = int_to_hex(int(len(bytecode) / 2), 4)
+    bytecode = MTRK + length + bytecode
     return bytecode
 
 
 @addToClass(AST.SilenceNode)
 def compile(self):
     """Ecrit un silence."""
+    if DEBUG:
+        print('SILENCE NODE')
     return ""
 
 
 @addToClass(AST.TempoNode)
 def compile(self):
     """Définit le tempo."""
+    if DEBUG:
+        print('TEMPO NODE')
     return ""
 
 
@@ -163,8 +193,10 @@ if __name__ == "__main__":
     prog = open(sys.argv[1]).read()
     ast = parse(prog)
     compiled = ast.compile()
-    name = os.path.splitext(sys.argv[1])[0] + '.mus'
-    outfile = open(name, 'w')
-    outfile.write(compiled)
-    outfile.close()
+    name = os.path.splitext(sys.argv[1])[0] + '.mid'
+    with open(name, "wb") as f:
+        f.write(binascii.unhexlify(compiled))
+    # outfile = open(name, 'w')
+    # outfile.write(compiled)
+    # outfile.close()
     print("Wrote output to", name)
