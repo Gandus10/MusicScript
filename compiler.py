@@ -51,7 +51,8 @@ INSTRUMENTS = {
     'GUITAR': 'c018',
     'VIOLIN': 'c028',
     'PIANO': 'c001',
-    'FLUTE': 'c049'
+    'FLUTE': 'c049',
+    'SYNTHPAD':'c058'
 }
 
 vars = {}
