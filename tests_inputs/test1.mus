@@ -1,5 +1,5 @@
 track(
-    GUITAR;
+    FLUTE;
     tempo = 2;
     LA;
     SI;
@@ -9,16 +9,13 @@ track(
     silence = 2
 );
 
-my_tune = (LA,DO,RE,MI,FA);
+my_tune = (DO,RE,MI,FA,SOL,LA,SI);
 
 track (
-    PIANO;
+    FLUTE;
     tempo = 2;
     loop 5 {
-        FA;
-        SOL;
-        my_tune;
-        FA
+        my_tune
     };
     SOL;
     SOL
