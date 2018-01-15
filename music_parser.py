@@ -68,7 +68,6 @@ def p_expression(p):
     ''' expression : note
         | silence
         | structure '''
-    # p[0] = AST.TokenNode(p[1])
     p[0] = p[1]
 
 
@@ -88,7 +87,7 @@ def p_group_note(p):
 
 
 def p_tempo(p):
-    ''' tempo : TEMPO '=' NUMBER '''
+    ''' tempo : IDENTIFIER '=' TEMPO '''
     p[0] = AST.TempoNode(AST.TokenNode(p[3]))
 
 
@@ -103,8 +102,8 @@ def p_note(p):
 
 
 def p_instrument(p):
-    '''instrument : INSTRUMENT'''
-    p[0] = AST.InstrumentNode(AST.TokenNode(p[1]))
+    ''' instrument : IDENTIFIER '=' INSTRUMENT '''
+    p[0] = AST.InstrumentNode(AST.TokenNode(p[3]))
 
 
 # ------------------EXAMPLE--------------------

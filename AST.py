@@ -106,13 +106,6 @@ class InstructionNode(Node):
 class InstrumentNode(Node):
     type = 'INSTRUMENT'
 
-    def __init__(self, instrument):
-        Node.__init__(self)
-        self.instrument = instrument
-
-    def __repr__(self):
-        return repr(self.instrument)
-
 
 class TokenNode(Node):
     type = 'token'
