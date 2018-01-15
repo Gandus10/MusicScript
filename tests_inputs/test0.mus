@@ -1,10 +1,20 @@
 track(
     INSTRUMENT=PIANO;
-    TEMPO=UP;
-    RE;
+    TEMPO=500;
     DO;
     RE;
-    DO;
+    MI;
+    FA;
+    SOL;
+    LA;
+    SI;
+    silence=2000;
+    silence=3000;
+    LA;
+    SOL;
+    FA;
+    MI;
     RE;
-    DO
+    DO;
+    silence=2000
 )

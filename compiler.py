@@ -2,22 +2,28 @@ import AST
 import binascii
 from AST import addToClass
 
-DEBUG = False;
+DEBUG = False
 MTHD = "4d546864"
 MTRK = "4d54726b"
 END_OF_TRACK = "ff2f00"
 SMF = "0001"
-PPQ = "03c0"
+PPQ = "03e8"
 
 DELTA_TIME_ZERO = "00"
-DELTA_TIME_DEFAULT = "8768"
-DELTA_TIME_ONE = "01"
 
-TEMPO_TRACK = MTRK + '00000019' + \
-              DELTA_TIME_ZERO + 'FF580404021808' + \
-              DELTA_TIME_ZERO + 'FF59020200' + \
-              DELTA_TIME_ZERO + 'FF51030F4240' + \
-              DELTA_TIME_ONE + END_OF_TRACK
+DELTA_TIME_DEFAULT = "8768"
+
+
+
+DELTA_TIME_ONE = "01"
+END_NOTE_48 = "48"
+END_NOTE_ZERO = "00"
+
+TEMPO_CONDUCTOR_TRACK = MTRK + '00000019' + \
+                        DELTA_TIME_ZERO + 'FF580404021808' + \
+                        DELTA_TIME_ZERO + 'FF59020200' + \
+                        DELTA_TIME_ZERO + 'FF51030F4240' + \
+                        DELTA_TIME_ONE + END_OF_TRACK
 
 META_EVENT = "ff030120"
 NON = "90"
@@ -34,9 +40,6 @@ CONTROLLERS = DELTA_TIME_ZERO + RESET_ALL_CONTROLLER + \
               DELTA_TIME_ZERO + STEREO_PAN + \
               DELTA_TIME_ZERO + VOLUME
 
-END_NOTE_48 = "48"
-END_NOTE_ZERO = "00"
-
 NOTES = {
     'DO': '3c',
     'RE': '3e',
@@ -52,8 +55,11 @@ INSTRUMENTS = {
     'VIOLIN': 'c028',
     'PIANO': 'c001',
     'FLUTE': 'c049',
-    'SYNTHPAD':'c058'
+    'SYNTHPAD': 'c058',
+    'HELICOPTER': 'c07d'
 }
+
+
 
 vars = {}
 
@@ -64,6 +70,37 @@ def int_to_hex(val, nb_bytes_desired):
         hexsize = '0' + hexsize
     return hexsize
 
+def int_to_vlv(val):
+    val_bin=bin(val)[2:]
+    val_bin_vlv=""
+    count=0
+    state='0'
+    for bit in reversed(val_bin):
+        val_bin_vlv = bit+val_bin_vlv
+        count += 1
+        if count%7==0:
+            val_bin_vlv = state + val_bin_vlv
+            state='1'
+
+    while len(val_bin_vlv) % 8 != 0:
+        val_bin_vlv = '0' + val_bin_vlv
+
+    if len(val_bin_vlv)>8:
+        val_bin_vlv = '1'+val_bin_vlv[1:]
+
+    return hex(int(val_bin_vlv,2))[2:]
+
+
+
+def vlv_to_int(val_vlv_hex):
+    vlv_bin=bin(int(val_vlv_hex,16))[2:]
+    bin_number=""
+    count=0
+    for bit in reversed(vlv_bin):
+        count += 1
+        if count%8!=0:
+            bin_number = bit + bin_number
+    return int(bin_number,2)
 
 @addToClass(AST.SongNode)
 def compile(self):
@@ -91,7 +128,7 @@ def compile(self):
         print('INSTRU NODE')
     """Definit l'instrument pour la track."""
     # print(self.tok, INSTRUMENTS)
-    vars['instrument'] = INSTRUMENTS[self.instrument.tok]
+    vars['instrument'] = INSTRUMENTS[self.children[0].tok]
     return ""
 
 
@@ -103,9 +140,19 @@ def compile(self):
     bytecode = ""
     # Récupération de l'hexa dans le dict de notes
     try:
+        tempo = vars['silence']
+        del vars['silence']
+    except(KeyError):
+        tempo = DELTA_TIME_DEFAULT
+        try:
+            tempo = vars['tempo']
+        except(KeyError):
+            pass
+
+    try:
         note = NOTES[self.tok]
         bytecode += DELTA_TIME_ZERO + NON + note + END_NOTE_48 + \
-                    DELTA_TIME_DEFAULT + NOF + note + END_NOTE_ZERO
+                    tempo + NOF + note + END_NOTE_ZERO
     except:
         bytecode += vars[self.tok]
     return bytecode
@@ -148,8 +195,18 @@ def compile(self):
     if DEBUG:
         print('TRACK NODE')
     bytecode = ""
-    for c in self.children:
+
+    size=len(self.children)
+    i=0
+    while i < size:
+        c = self.children[i]
+        if type(c) is AST.TokenNode :
+            while i+1 < size and type(self.children[i+1]) is AST.SilenceNode:
+                self.children[i+1].compile()
+                i += 1
         bytecode += c.compile()
+        i+=1
+
 
     bytecode = DELTA_TIME_ZERO + vars['instrument'] + \
                CONTROLLERS + DELTA_TIME_ZERO + META_EVENT + bytecode + \
@@ -164,7 +221,13 @@ def compile(self):
 def compile(self):
     """Ecrit un silence."""
     if DEBUG:
-        print('SILENCE NODE')
+        print('SILENCE NODE', int_to_vlv(int(self.children[0].tok) * 2))
+    try:
+        last_silence=vlv_to_int(vars['silence'])
+        vars['silence'] = int_to_vlv(int(self.children[0].tok) * 2+last_silence)
+    except(KeyError):
+        vars['silence'] = int_to_vlv(int(self.children[0].tok) * 2)
+
     return ""
 
 
@@ -172,24 +235,9 @@ def compile(self):
 def compile(self):
     """Définit le tempo."""
     if DEBUG:
-        print('TEMPO NODE')
+        print('TEMPO NODE', int_to_vlv(int(self.children[0].tok)*2))
+    vars['tempo']=int_to_vlv(int(self.children[0].tok)*2)
     return ""
-
-
-# @addToClass(AST.OpNode)
-# def compile(self):
-#     bytecode = ""
-#     if len(self.children) == 1:
-#         bytecode += self.children[0].compile()
-#         bytecode += "USUB\n"
-#     else:
-#         bytecode += self.children[0].compile()
-#         bytecode += self.children[1].compile()
-#         bytecode += operations[self.op]
-#     return bytecode
-
-
-# def whilecounter():
 
 
 if __name__ == "__main__":
@@ -202,7 +250,4 @@ if __name__ == "__main__":
     name = os.path.splitext(sys.argv[1])[0] + '.mid'
     with open(name, "wb") as f:
         f.write(binascii.unhexlify(compiled))
-    # outfile = open(name, 'w')
-    # outfile.write(compiled)
-    # outfile.close()
     print("Wrote output to", name)

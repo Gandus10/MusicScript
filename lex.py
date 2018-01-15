@@ -1,9 +1,6 @@
 import ply.lex as lex
 
 reserved_words = (
-    'slow',
-    'medium',
-    'up',
     'track',
     'silence',
     'loop',
@@ -39,7 +36,7 @@ def t_INSTRUMENT(t):
 
 
 def t_TEMPO(t):
-    r'(SLOW)|(MEDIUM)|(UP)'
+    r'(TEMPO)'
     return t
 
 

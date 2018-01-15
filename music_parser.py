@@ -87,7 +87,7 @@ def p_group_note(p):
 
 
 def p_tempo(p):
-    ''' tempo : IDENTIFIER '=' TEMPO '''
+    ''' tempo : TEMPO '=' NUMBER '''
     p[0] = AST.TempoNode(AST.TokenNode(p[3]))
 
 
