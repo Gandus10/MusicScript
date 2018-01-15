@@ -1,6 +1,9 @@
 import ply.lex as lex
 
 reserved_words = (
+    'slow',
+    'medium',
+    'up',
     'track',
     'silence',
     'loop',
@@ -9,7 +12,7 @@ reserved_words = (
     'piano',
     'flute',
     'synthpad',
-    'tempo',
+    'helicopter',
     'do',
     're',
     'mi',
@@ -21,6 +24,7 @@ reserved_words = (
 
 tokens = (
              'NUMBER',
+             'TEMPO',
              'IDENTIFIER',
              'NOTE',
              'INSTRUMENT'
@@ -30,7 +34,12 @@ literals = '(){};=,'
 
 
 def t_INSTRUMENT(t):
-    r'(GUITAR)|(VIOLIN)|(PIANO)|(FLUTE)|(SYNTHPAD)'
+    r'(GUITAR)|(VIOLIN)|(PIANO)|(FLUTE)|(SYNTHPAD)|(HELICOPTER)'
+    return t
+
+
+def t_TEMPO(t):
+    r'(SLOW)|(MEDIUM)|(UP)'
     return t
 
 

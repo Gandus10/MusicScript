@@ -1,5 +1,6 @@
 track(
-    FLUTE;
+    INSTRUMENT=PIANO;
+    TEMPO=UP;
     RE;
     RE;
     RE;

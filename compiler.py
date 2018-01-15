@@ -2,7 +2,7 @@ import AST
 import binascii
 from AST import addToClass
 
-DEBUG = False;
+DEBUG = False
 MTHD = "4d546864"
 MTRK = "4d54726b"
 END_OF_TRACK = "ff2f00"
@@ -10,14 +10,20 @@ SMF = "0001"
 PPQ = "01e0"
 
 DELTA_TIME_ZERO = "00"
-DELTA_TIME_DEFAULT = "8170"
-DELTA_TIME_ONE = "01"
+DELTA_TIME_SLOW = "8740"
+DELTA_TIME_MEDIUM = "8360"
+# DELTA_TIME_UP = "8550"
+DELTA_TIME_UP = "8170"
 
-TEMPO_TRACK = MTRK + '00000019' + \
-              DELTA_TIME_ZERO + 'FF580404021808' + \
-              DELTA_TIME_ZERO + 'FF59020200' + \
-              DELTA_TIME_ZERO + 'FF51030F4240' + \
-              DELTA_TIME_ONE + END_OF_TRACK
+DELTA_TIME_ONE = "01"
+END_NOTE_48 = "48"
+END_NOTE_ZERO = "00"
+
+TEMPO_CONDUCTOR_TRACK = MTRK + '00000019' + \
+                        DELTA_TIME_ZERO + 'FF580404021808' + \
+                        DELTA_TIME_ZERO + 'FF59020200' + \
+                        DELTA_TIME_ZERO + 'FF51030F4240' + \
+                        DELTA_TIME_ONE + END_OF_TRACK
 
 META_EVENT = "ff030120"
 NON = "90"
@@ -34,9 +40,6 @@ CONTROLLERS = DELTA_TIME_ZERO + RESET_ALL_CONTROLLER + \
               DELTA_TIME_ZERO + STEREO_PAN + \
               DELTA_TIME_ZERO + VOLUME
 
-END_NOTE_48 = "48"
-END_NOTE_ZERO = "00"
-
 NOTES = {
     'DO': '3c',
     'RE': '3e',
@@ -52,7 +55,14 @@ INSTRUMENTS = {
     'VIOLIN': 'c028',
     'PIANO': 'c001',
     'FLUTE': 'c049',
-    'SYNTHPAD':'c058'
+    'SYNTHPAD': 'c058',
+    'HELICOPTER': 'c07d'
+}
+
+TEMPOS = {
+    'SLOW': DELTA_TIME_SLOW,
+    'MEDIUM': DELTA_TIME_MEDIUM,
+    'UP': DELTA_TIME_UP
 }
 
 vars = {}
@@ -91,7 +101,7 @@ def compile(self):
         print('INSTRU NODE')
     """Definit l'instrument pour la track."""
     # print(self.tok, INSTRUMENTS)
-    vars['instrument'] = INSTRUMENTS[self.instrument.tok]
+    vars['instrument'] = INSTRUMENTS[self.children[0].tok]
     return ""
 
 
@@ -102,10 +112,16 @@ def compile(self):
         print('TOKEN NODE', self.tok)
     bytecode = ""
     # Récupération de l'hexa dans le dict de notes
+    tempo = DELTA_TIME_MEDIUM
+    try:
+        tempo = vars['tempo']
+    except(KeyError):
+        pass
+
     try:
         note = NOTES[self.tok]
         bytecode += DELTA_TIME_ZERO + NON + note + END_NOTE_48 + \
-                    DELTA_TIME_DEFAULT + NOF + note + END_NOTE_ZERO
+                    tempo + NOF + note + END_NOTE_ZERO
     except:
         bytecode += vars[self.tok]
     return bytecode
@@ -172,24 +188,9 @@ def compile(self):
 def compile(self):
     """Définit le tempo."""
     if DEBUG:
-        print('TEMPO NODE')
+        print('TEMPO NODE', self.children[0].tok)
+    vars['tempo'] = TEMPOS[self.children[0].tok]
     return ""
-
-
-# @addToClass(AST.OpNode)
-# def compile(self):
-#     bytecode = ""
-#     if len(self.children) == 1:
-#         bytecode += self.children[0].compile()
-#         bytecode += "USUB\n"
-#     else:
-#         bytecode += self.children[0].compile()
-#         bytecode += self.children[1].compile()
-#         bytecode += operations[self.op]
-#     return bytecode
-
-
-# def whilecounter():
 
 
 if __name__ == "__main__":
@@ -202,7 +203,4 @@ if __name__ == "__main__":
     name = os.path.splitext(sys.argv[1])[0] + '.mid'
     with open(name, "wb") as f:
         f.write(binascii.unhexlify(compiled))
-    # outfile = open(name, 'w')
-    # outfile.write(compiled)
-    # outfile.close()
     print("Wrote output to", name)
