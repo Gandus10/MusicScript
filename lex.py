@@ -40,6 +40,7 @@ def t_TEMPO(t):
     r'(TEMPO)'
     return t
 
+
 def t_TIME(t):
     r'(TIME)'
     return t

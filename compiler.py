@@ -48,7 +48,6 @@ NOTES = {
     'SI': '3b'
 }
 
-
 INSTRUMENTS = {
     'GUITAR': 'c018',
     'VIOLIN': 'c028',
