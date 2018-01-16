@@ -2,7 +2,7 @@ import AST
 import binascii
 from AST import addToClass
 
-DEBUG = False
+DEBUG = True
 MTHD = "4d546864"
 MTRK = "4d54726b"
 END_OF_TRACK = "ff2f00"
@@ -39,14 +39,15 @@ CONTROLLERS = DELTA_TIME_ZERO + RESET_ALL_CONTROLLER + \
               DELTA_TIME_ZERO + VOLUME
 
 NOTES = {
-    'DO': '3c',
-    'RE': '3e',
-    'MI': '40',
-    'FA': '42',
-    'SOL': '44',
-    'LA': '46',
-    'SI': '48'
+    'DO': '30',
+    'RE': '32',
+    'MI': '34',
+    'FA': '35',
+    'SOL': '37',
+    'LA': '39',
+    'SI': '3b'
 }
+
 
 INSTRUMENTS = {
     'GUITAR': 'c018',

@@ -1,0 +1,15 @@
+track(
+    INSTRUMENT=PIANO;
+    TEMPO=500;
+    DO;RE;MI;DO;
+    DO;RE;MI;DO;
+    MI;FA;SOL;
+    silence=800;
+    MI;FA;SOL;
+    silence=800;
+    SOL;LA;SOL;FA;MI;DO;
+    SOL;LA;SOL;FA;MI;DO;
+    DO;SOL;DO;
+    silence=800;
+    DO;SOL;DO
+)
