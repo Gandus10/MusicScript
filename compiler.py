@@ -140,8 +140,8 @@ def compile(self):
     bytecode = ""
     # Récupération de l'hexa dans le dict de notes
     try:
-        tempo = vars['silence']
-        del vars['silence']
+        tempo = vars['time']
+        del vars['time']
     except(KeyError):
         tempo = DELTA_TIME_DEFAULT
         try:
@@ -201,7 +201,7 @@ def compile(self):
     while i < size:
         c = self.children[i]
         if type(c) is AST.TokenNode :
-            while i+1 < size and type(self.children[i+1]) is AST.SilenceNode:
+            while i+1 < size and type(self.children[i+1]) is AST.TimeNode:
                 self.children[i+1].compile()
                 i += 1
         bytecode += c.compile()
@@ -217,16 +217,16 @@ def compile(self):
     return bytecode
 
 
-@addToClass(AST.SilenceNode)
+@addToClass(AST.TimeNode)
 def compile(self):
     """Ecrit un silence."""
     if DEBUG:
-        print('SILENCE NODE', int_to_vlv(int(self.children[0].tok) * 2))
+        print('TIME NODE', int_to_vlv(int(self.children[0].tok) * 2))
     try:
-        last_silence=vlv_to_int(vars['silence'])
-        vars['silence'] = int_to_vlv(int(self.children[0].tok) * 2+last_silence)
+        last_time=vlv_to_int(vars['time'])
+        vars['time'] = int_to_vlv(int(self.children[0].tok) * 2+last_time)
     except(KeyError):
-        vars['silence'] = int_to_vlv(int(self.children[0].tok) * 2)
+        vars['time'] = int_to_vlv(int(self.children[0].tok) * 2)
 
     return ""
 
@@ -239,6 +239,14 @@ def compile(self):
     vars['tempo']=int_to_vlv(int(self.children[0].tok)*2)
     return ""
 
+@addToClass(AST.SilenceNode)
+def compile(self):
+    """Ecrit une note silencieuse"""
+    bytecode=""
+    silence = int_to_vlv(self.children[0].tok)
+    bytecode += DELTA_TIME_ZERO + NON + "3c" + END_NOTE_ZERO + \
+                silence + NOF + "3c" + END_NOTE_ZERO
+    return bytecode
 
 if __name__ == "__main__":
     from music_parser import parse

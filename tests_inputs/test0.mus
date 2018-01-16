@@ -1,15 +1,15 @@
 track(
-    INSTRUMENT=PIANO;
+    INSTRUMENT=SYNTHPAD;
     TEMPO=500;
     DO;
     RE;
     MI;
     FA;
+    silence=3000;
     SOL;
     LA;
     SI;
-    silence=2000;
-    silence=3000;
+    TIME=3000;
     LA;
     SOL;
     FA;

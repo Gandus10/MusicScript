@@ -39,6 +39,7 @@ def p_instruction_statement(p):
 def p_statement(p):
     ''' statement : silence
         | tempo
+        | time
         | note
         | instrument
         | structure '''
@@ -89,6 +90,10 @@ def p_group_note(p):
 def p_tempo(p):
     ''' tempo : TEMPO '=' NUMBER '''
     p[0] = AST.TempoNode(AST.TokenNode(p[3]))
+
+def p_time(p):
+    ''' time : TIME '=' NUMBER '''
+    p[0] = AST.TimeNode(AST.TokenNode(p[3]))
 
 
 def p_silence(p):

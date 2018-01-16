@@ -133,6 +133,8 @@ class AssignNode(Node):
 class TempoNode(Node):
     type = 'TEMPO'
 
+class TimeNode(Node):
+    type = 'TIME'
 
 class SilenceNode(Node):
     type = 'SILENCE'
