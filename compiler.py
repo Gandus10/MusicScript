@@ -117,7 +117,7 @@ def compile(self):
         tempo = vars['tempo']
     except(KeyError):
         pass
-
+    print(tempo)
     try:
         note = NOTES[self.tok]
         bytecode += DELTA_TIME_ZERO + NON + note + END_NOTE_48 + \

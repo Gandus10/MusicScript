@@ -1,10 +1,11 @@
-up = (DO,RE,MI,FA,SOL,LA,SI);
+upp = (DO,RE,MI,FA,SOL,LA,SI);
 down = (SI,LA,SOL,FA,MI,RE,DO);
 
 track (
-    SYNTHPAD;
+    INSTRUMENT = SYNTHPAD;
+    TEMPO = UP;
     loop 2 {
-        up;
+        upp;
         down
     }
 )
