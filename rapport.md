@@ -160,7 +160,61 @@ note : NOTE
 instrument : INSTRUMENT
 ```
 
+Exemple pour les chansonnettes récursives.
+
+```python
+def p_chansonnette_recursive(p):
+    ''' chansonnette : expression
+        | expression ';' chansonnette '''
+    try:
+        p[0] = AST.ChansonnetteNode([p[1]] + p[3].children)
+    except:
+        p[0] = AST.ChansonnetteNode(p[1])
+```
+
 ## Compiler
+
+Pour le compiler, nous avons transformer nos expression en code héxadécimal. Chaque expression, notes, instruments en-tête à un code qui lui correspond.
+
+Exemple pour quelques constantes obligatoire pour les fichier .mid
+
+```python
+DEBUG = True
+MTHD = "4d546864"
+MTRK = "4d54726b"
+END_OF_TRACK = "ff2f00"
+SMF = "0001"
+PPQ = "03e8"
+```
+
+Exemple pour les notes et les instruments.
+
+```python
+NOTES = {
+    'DO': '30',
+    'RE': '32',
+    'MI': '34',
+    'FA': '35',
+    'SOL': '37',
+    'LA': '39',
+    'SI': '3b'
+}
+
+INSTRUMENTS = {
+    'GUITAR': 'c018',
+    'VIOLIN': 'c028',
+    'PIANO': 'c001',
+    'FLUTE': 'c049',
+    'SYNTHPAD': 'c058',
+    'HELICOPTER': 'c07d'
+}
+```
+
+
+
+
+
+
 
 
 # Conclusion
