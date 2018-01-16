@@ -1,11 +1,9 @@
 import ply.lex as lex
 
 reserved_words = (
-    'slow',
-    'medium',
-    'up',
     'track',
     'silence',
+    'time',
     'loop',
     'violin',
     'guitar',
@@ -39,7 +37,11 @@ def t_INSTRUMENT(t):
 
 
 def t_TEMPO(t):
-    r'(SLOW)|(MEDIUM)|(UP)'
+    r'(TEMPO)'
+    return t
+
+def t_TIME(t):
+    r'(TIME)'
     return t
 
 

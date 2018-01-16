@@ -7,13 +7,11 @@ MTHD = "4d546864"
 MTRK = "4d54726b"
 END_OF_TRACK = "ff2f00"
 SMF = "0001"
-PPQ = "01e0"
+PPQ = "03e8"
 
 DELTA_TIME_ZERO = "00"
-DELTA_TIME_SLOW = "8740"
-DELTA_TIME_MEDIUM = "8360"
-# DELTA_TIME_UP = "8550"
-DELTA_TIME_UP = "8170"
+
+DELTA_TIME_DEFAULT = "8768"
 
 DELTA_TIME_ONE = "01"
 END_NOTE_48 = "48"
@@ -59,12 +57,6 @@ INSTRUMENTS = {
     'HELICOPTER': 'c07d'
 }
 
-TEMPOS = {
-    'SLOW': DELTA_TIME_SLOW,
-    'MEDIUM': DELTA_TIME_MEDIUM,
-    'UP': DELTA_TIME_UP
-}
-
 vars = {}
 
 
@@ -73,6 +65,38 @@ def int_to_hex(val, nb_bytes_desired):
     while (len(hexsize) < nb_bytes_desired * 2):
         hexsize = '0' + hexsize
     return hexsize
+
+
+def int_to_vlv(val):
+    val_bin = bin(val)[2:]
+    val_bin_vlv = ""
+    count = 0
+    state = '0'
+    for bit in reversed(val_bin):
+        val_bin_vlv = bit + val_bin_vlv
+        count += 1
+        if count % 7 == 0:
+            val_bin_vlv = state + val_bin_vlv
+            state = '1'
+
+    while len(val_bin_vlv) % 8 != 0:
+        val_bin_vlv = '0' + val_bin_vlv
+
+    if len(val_bin_vlv) > 8:
+        val_bin_vlv = '1' + val_bin_vlv[1:]
+
+    return hex(int(val_bin_vlv, 2))[2:]
+
+
+def vlv_to_int(val_vlv_hex):
+    vlv_bin = bin(int(val_vlv_hex, 16))[2:]
+    bin_number = ""
+    count = 0
+    for bit in reversed(vlv_bin):
+        count += 1
+        if count % 8 != 0:
+            bin_number = bit + bin_number
+    return int(bin_number, 2)
 
 
 @addToClass(AST.SongNode)
@@ -112,12 +136,15 @@ def compile(self):
         print('TOKEN NODE', self.tok)
     bytecode = ""
     # Récupération de l'hexa dans le dict de notes
-    tempo = DELTA_TIME_MEDIUM
     try:
-        tempo = vars['tempo']
+        tempo = vars['time']
+        del vars['time']
     except(KeyError):
-        pass
-    print(tempo)
+        tempo = DELTA_TIME_DEFAULT
+        try:
+            tempo = vars['tempo']
+        except(KeyError):
+            pass
     try:
         note = NOTES[self.tok]
         bytecode += DELTA_TIME_ZERO + NON + note + END_NOTE_48 + \
@@ -164,8 +191,17 @@ def compile(self):
     if DEBUG:
         print('TRACK NODE')
     bytecode = ""
-    for c in self.children:
+
+    size = len(self.children)
+    i = 0
+    while i < size:
+        c = self.children[i]
+        if type(c) is AST.TokenNode:
+            while i + 1 < size and type(self.children[i + 1]) is AST.TimeNode:
+                self.children[i + 1].compile()
+                i += 1
         bytecode += c.compile()
+        i += 1
 
     bytecode = DELTA_TIME_ZERO + vars['instrument'] + \
                CONTROLLERS + DELTA_TIME_ZERO + META_EVENT + bytecode + \
@@ -176,11 +212,17 @@ def compile(self):
     return bytecode
 
 
-@addToClass(AST.SilenceNode)
+@addToClass(AST.TimeNode)
 def compile(self):
     """Ecrit un silence."""
     if DEBUG:
-        print('SILENCE NODE')
+        print('TIME NODE', int_to_vlv(int(self.children[0].tok) * 2))
+    try:
+        last_time = vlv_to_int(vars['time'])
+        vars['time'] = int_to_vlv(int(self.children[0].tok) * 2 + last_time)
+    except(KeyError):
+        vars['time'] = int_to_vlv(int(self.children[0].tok) * 2)
+
     return ""
 
 
@@ -188,9 +230,19 @@ def compile(self):
 def compile(self):
     """Définit le tempo."""
     if DEBUG:
-        print('TEMPO NODE', self.children[0].tok)
-    vars['tempo'] = TEMPOS[self.children[0].tok]
+        print('TEMPO NODE', int_to_vlv(int(self.children[0].tok) * 2))
+    vars['tempo'] = int_to_vlv(int(self.children[0].tok) * 2)
     return ""
+
+
+@addToClass(AST.SilenceNode)
+def compile(self):
+    """Ecrit une note silencieuse"""
+    bytecode = ""
+    silence = int_to_vlv(self.children[0].tok)
+    bytecode += DELTA_TIME_ZERO + NON + "3c" + END_NOTE_ZERO + \
+                silence + NOF + "3c" + END_NOTE_ZERO
+    return bytecode
 
 
 if __name__ == "__main__":
