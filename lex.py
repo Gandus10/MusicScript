@@ -54,7 +54,7 @@ def t_TIME(t):
 
 
 def t_FIGURE(t):
-    r'[@$?!]'
+    r'[@$?!.]'
     return t
 
 

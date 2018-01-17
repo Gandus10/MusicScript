@@ -1,0 +1,5 @@
+track(
+    INSTRUMENT=PIANO;
+    TEMPO=500;
+    loop 8 {.DO}
+)

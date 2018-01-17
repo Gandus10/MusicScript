@@ -65,7 +65,8 @@ FIGURES = {
     '@': 4,  # Ronde
     '$': 2,  # Blanche
     '?': 1,  # Noire
-    '!': 1 / 2  # Croche
+    '!': 1 / 2, # Croche
+    '.': 1 / 4 # Double croche
 }
 
 vars = {
