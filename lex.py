@@ -25,10 +25,17 @@ tokens = (
              'TEMPO',
              'IDENTIFIER',
              'NOTE',
-             'INSTRUMENT'
+             'INSTRUMENT',
+             'ADD_OP',
+             'FIGURE'
          ) + tuple(map(lambda s: s.upper(), reserved_words))
 
 literals = '(){};=,'
+
+
+def t_ADD_OP(t):
+    r'[+-]'
+    return t
 
 
 def t_INSTRUMENT(t):
@@ -43,6 +50,11 @@ def t_TEMPO(t):
 
 def t_TIME(t):
     r'(TIME)'
+    return t
+
+
+def t_FIGURE(t):
+    r'[@$?!]'
     return t
 
 

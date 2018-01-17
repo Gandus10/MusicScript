@@ -1,19 +1,18 @@
-track(
-    FLUTE;
-    tempo = 2;
-    LA;
-    SI;
-    MI;
-    SI;
-    LA;
-    silence = 2
+
+track (
+    INSTRUMENT=PIANO;
+    TEMPO=500;
+    silence = 1000;
+    loop 60 {
+        SOL
+    }
 );
 
 my_tune = (DO,RE,MI,FA,SOL,LA,SI);
 
 track (
-    FLUTE;
-    tempo = 2;
+    INSTRUMENT=PIANO;
+    TEMPO=500;
     loop 5 {
         my_tune
     };
