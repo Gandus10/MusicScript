@@ -10,9 +10,7 @@ SMF = "0001"
 PPQ = "03e8"
 
 DELTA_TIME_ZERO = "00"
-
 DELTA_TIME_DEFAULT = "8768"
-
 DELTA_TIME_ONE = "01"
 END_NOTE_48 = "48"
 END_NOTE_ZERO = "00"
@@ -39,13 +37,13 @@ CONTROLLERS = DELTA_TIME_ZERO + RESET_ALL_CONTROLLER + \
               DELTA_TIME_ZERO + VOLUME
 
 NOTES = {
-    'DO': '30',
-    'RE': '32',
-    'MI': '34',
-    'FA': '35',
-    'SOL': '37',
-    'LA': '39',
-    'SI': '3b'
+    'DO': '30',  # 48
+    'RE': '32',  # 50
+    'MI': '34',  # 52
+    'FA': '35',  # 53
+    'SOL': '37',  # 55
+    'LA': '39',  # 57
+    'SI': '3b'  # 59
 }
 
 INSTRUMENTS = {
@@ -55,6 +53,18 @@ INSTRUMENTS = {
     'FLUTE': 'c049',
     'SYNTHPAD': 'c058',
     'HELICOPTER': 'c07d'
+}
+
+operations = {
+    '+': lambda x, y: x + y,
+    '-': lambda x, y: x - y
+}
+
+FIGURES = {
+    '@': 4,
+    '$': 2,
+    '?': 1,
+    '!': 1 / 2
 }
 
 vars = {}
@@ -135,22 +145,73 @@ def compile(self):
     if DEBUG:
         print('TOKEN NODE', self.tok)
     bytecode = ""
-    # Récupération de l'hexa dans le dict de notes
+    try:
+        bytecode += vars[self.tok]
+    except:
+        print("var not found", self.tok)
+    return bytecode
+
+
+@addToClass(AST.NotePlusPlus)
+def compile(self):
+    """Definit la figure de la note (ronde, blanche, noire, croche)."""
+
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    if self.figure != '':
+        vars['time'] = int_to_vlv(int(FIGURES[self.figure] * int(PPQ, 16)))
+
+    # last_time = 0
+    # try:
+    #     last_time = vlv_to_int(vars['time'])
+    # except(KeyError):
+    #     pass
+    #
+    # vars['time'] = int_to_vlv(int(self.children[0].tok) * 2 + last_time)
+    bytecode = ""
+    for c in self.children:
+        bytecode += c.compile()
+    return bytecode
+
+
+@addToClass(AST.NoteNode)
+def compile(self, gamme=0, op=''):
+    """Ecrit la valeur hexa de la note. NON + NOF + Delta time."""
+    if DEBUG:
+        print('NOTE NODE', self.note)
+    bytecode = ""
+
+    # Recherche du tempo
     try:
         tempo = vars['time']
         del vars['time']
     except(KeyError):
+        # Tempo par defaut
         tempo = DELTA_TIME_DEFAULT
         try:
             tempo = vars['tempo']
         except(KeyError):
             pass
-    try:
-        note = NOTES[self.tok]
-        bytecode += DELTA_TIME_ZERO + NON + note + END_NOTE_48 + \
-                    tempo + NOF + note + END_NOTE_ZERO
-    except:
-        bytecode += vars[self.tok]
+
+    # Récupération de l'hexa dans le dict de notes
+    note = NOTES[self.note]
+    if gamme != 0:
+        note = hex(operations[op](int(note, 16), 12 * gamme))[2:]
+
+    bytecode += DELTA_TIME_ZERO + NON + note + END_NOTE_48 + \
+                tempo + NOF + note + END_NOTE_ZERO
+
+    return bytecode
+
+
+@addToClass(AST.GammeNode)
+def compile(self):
+    """ Change la gamme d'une note. """
+    if DEBUG:
+        print('GAMME NODE : ' + self.children[0].note, self.children[1].tok)
+    bytecode = ""
+    bytecode += self.children[0].compile(self.children[1].tok, self.op)
     return bytecode
 
 
@@ -217,12 +278,12 @@ def compile(self):
     """Ecrit un silence."""
     if DEBUG:
         print('TIME NODE', int_to_vlv(int(self.children[0].tok) * 2))
+    last_time = 0
     try:
         last_time = vlv_to_int(vars['time'])
-        vars['time'] = int_to_vlv(int(self.children[0].tok) * 2 + last_time)
     except(KeyError):
-        vars['time'] = int_to_vlv(int(self.children[0].tok) * 2)
-
+        pass
+    vars['time'] = int_to_vlv(int(self.children[0].tok) * 2 + last_time)
     return ""
 
 

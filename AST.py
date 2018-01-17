@@ -107,6 +107,39 @@ class InstrumentNode(Node):
     type = 'INSTRUMENT'
 
 
+class GammeNode(Node):
+    type = 'GAMME'
+
+    def __init__(self, children, op):
+        Node.__init__(self, children)
+        self.op = op
+
+    def __repr__(self):
+        return repr(f"{self.type} {self.op}")
+
+
+class NoteNode(Node):
+    type = 'NOTE'
+
+    def __init__(self, note):
+        Node.__init__(self)
+        self.note = note
+
+    def __repr__(self):
+        return repr(self.note)
+
+
+class NotePlusPlus(Node):
+    type = 'NOTEPP'
+
+    def __init__(self, children, figure=''):
+        Node.__init__(self, children)
+        self.figure = figure
+
+    def __repr__(self):
+        return repr(f"{self.type} {self.figure}")
+
+
 class TokenNode(Node):
     type = 'token'
 
@@ -133,8 +166,10 @@ class AssignNode(Node):
 class TempoNode(Node):
     type = 'TEMPO'
 
+
 class TimeNode(Node):
     type = 'TIME'
+
 
 class SilenceNode(Node):
     type = 'SILENCE'

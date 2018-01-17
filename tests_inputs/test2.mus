@@ -2,10 +2,7 @@ track(
     INSTRUMENT=PIANO;
     TEMPO=500;
     DO;
-    RE;
-    MI;
-    FA;
-    SOL;
-    LA;
-    SI
+    @DO;
+    DO-1;
+    !DO-1
 )
