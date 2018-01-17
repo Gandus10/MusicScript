@@ -1,5 +1,28 @@
 track(
     INSTRUMENT=PIANO;
-    TEMPO=500;
-    loop 8 {.DO}
+    TEMPO = 500;
+    !DO;
+    !DO;
+    !DO;
+
+    $FA;
+    $DO+1;
+
+    !SI;
+    !LA;
+    !SOL;
+    $FA+1;
+    ?DO+1;
+
+    !SI;
+    !LA;
+    !SOL;
+    $FA+1;
+    ?DO+1;
+
+    !SI;
+    !LA;
+    !SI;
+    $SOL
 )
+

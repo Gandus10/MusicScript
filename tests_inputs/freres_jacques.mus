@@ -5,19 +5,19 @@ ding_dong = (DO,SOL-1,$DO);
 
 track(
     INSTRUMENT=PIANO;
-    TEMPO=500;
-    loop 2 {
-        frere_jacques
-    };
-    loop 2 {
-        dormez_vous
-    };
-
-    loop 2 {
-        matines
-    };
-    
-    loop 2{
-        ding_dong
+    TEMPO=200;
+    loop 10{
+        loop 2 {
+            frere_jacques
+        };
+        loop 2 {
+            dormez_vous
+        };
+        loop 2 {
+            matines
+        };
+        loop 2{
+            ding_dong
+        }
     }
 )

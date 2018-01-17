@@ -1,4 +1,4 @@
-ma_note = (@RE-1,$DO+3,DO,DO);
+ma_note = (@RE-1,$DO+3,!DO,.DO, ?DO);
 
 track(
     INSTRUMENT=PIANO;

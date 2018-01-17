@@ -65,8 +65,8 @@ FIGURES = {
     '@': 4,  # Ronde
     '$': 2,  # Blanche
     '?': 1,  # Noire
-    '!': 1 / 2, # Croche
-    '.': 1 / 4 # Double croche
+    '!': 1 / 2,  # Croche
+    '.': 1 / 4  # Double croche
 }
 
 vars = {
@@ -135,9 +135,9 @@ def compile(self):
 
 @addToClass(AST.InstrumentNode)
 def compile(self):
-    if DEBUG:
-        print('INSTRU NODE')
     """Definit l'instrument pour la track."""
+    if DEBUG:
+        print('INSTRU NODE', self.children[0].tok)
     # print(self.tok, INSTRUMENTS)
     vars['instrument'] = INSTRUMENTS[self.children[0].tok]
     return ""
@@ -162,7 +162,8 @@ def compile(self):
     """Definit la figure de la note (ronde, blanche, noire, croche)."""
 
     if self.figure != '':
-        vars['time'] = int_to_vlv(int(FIGURES[self.figure] * int(PPQ, 16)))
+        # vars['time'] = int_to_vlv(int(FIGURES[self.figure] * int(PPQ, 16)))
+        vars['figure'] = self.figure
 
     bytecode = ""
     for c in self.children:
@@ -180,11 +181,15 @@ def compile(self, gamme=0, op=''):
     tempo = ' '
     # Recherche du tempo
     try:
-        tempo = vars['time']
-        del vars['time']
-    except(KeyError):
-        # Tempo par defaut
-        pass
+        tempo = vars['figure']
+        del vars['figure']
+    except:
+        try:
+            tempo = vars['time']
+            del vars['time']
+        except(KeyError):
+            # Tempo par defaut
+            pass
 
     # Récupération de l'hexa dans le dict de notes
     note = NOTES[self.note]
@@ -253,7 +258,12 @@ def compile(self):
             while i + 1 < size and type(self.children[i + 1]) is AST.TimeNode:
                 self.children[i + 1].compile()
                 i += 1
-        bytecode += c.compile().replace(' ', vars['tempo'])
+        compiled = c.compile()
+        for key in FIGURES.keys():
+            compiled = compiled.replace(key, int_to_vlv(int(FIGURES[key] * vlv_to_int(vars['tempo']))))
+
+        compiled = compiled.replace(' ', vars['tempo'])
+        bytecode += compiled
         i += 1
 
     bytecode = DELTA_TIME_ZERO + vars['instrument'] + \
@@ -305,6 +315,7 @@ if __name__ == "__main__":
     prog = open(sys.argv[1]).read()
     ast = parse(prog)
     compiled = ast.compile()
+
     name = os.path.splitext(sys.argv[1])[0] + '.mid'
     with open(name, "wb") as f:
         f.write(binascii.unhexlify(compiled))
