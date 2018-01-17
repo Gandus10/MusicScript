@@ -3,6 +3,7 @@ import binascii
 from AST import addToClass
 
 DEBUG = True
+
 MTHD = "4d546864"
 MTRK = "4d54726b"
 END_OF_TRACK = "ff2f00"
@@ -61,10 +62,10 @@ operations = {
 }
 
 FIGURES = {
-    '@': 4,
-    '$': 2,
-    '?': 1,
-    '!': 1 / 2
+    '@': 4, # Ronde
+    '$': 2, # Blanche
+    '?': 1, # Noire
+    '!': 1 / 2 # Croche
 }
 
 vars = {}
@@ -156,19 +157,9 @@ def compile(self):
 def compile(self):
     """Definit la figure de la note (ronde, blanche, noire, croche)."""
 
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if self.figure != '':
         vars['time'] = int_to_vlv(int(FIGURES[self.figure] * int(PPQ, 16)))
 
-    # last_time = 0
-    # try:
-    #     last_time = vlv_to_int(vars['time'])
-    # except(KeyError):
-    #     pass
-    #
-    # vars['time'] = int_to_vlv(int(self.children[0].tok) * 2 + last_time)
     bytecode = ""
     for c in self.children:
         bytecode += c.compile()
@@ -219,7 +210,7 @@ def compile(self):
 def compile(self):
     """Sauvegarde de la valeur dans le dict vars."""
     if DEBUG:
-        print('ASSIGN NODE')
+        print('ASSIGN NODE', self.children[0].tok, self.children[1])
     vars[self.children[0].tok] = self.children[1].compile()
     return ""
 

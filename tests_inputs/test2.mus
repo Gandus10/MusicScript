@@ -1,8 +1,7 @@
+ma_note = (@RE-1,$DO+3,DO,DO);
+
 track(
     INSTRUMENT=PIANO;
     TEMPO=500;
-    DO;
-    @DO;
-    DO-1;
-    !DO-1
+    ma_note
 )

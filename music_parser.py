@@ -46,6 +46,11 @@ def p_statement(p):
     p[0] = p[1]
 
 
+def p_statement_identifier(p):
+    ''' statement : IDENTIFIER '''
+    p[0] = AST.TokenNode(p[1])
+
+
 def p_structure(p):
     ''' structure : LOOP NUMBER '{' chansonnette '}' '''
     p[0] = AST.LoopNode([AST.TokenNode(p[2]), p[4]])
@@ -61,7 +66,7 @@ def p_chansonnette_recursive(p):
 
 
 def p_expression_identifier(p):
-    ''' expression : IDENTIFIER'''
+    ''' expression : IDENTIFIER '''
     p[0] = AST.TokenNode(p[1])
 
 
@@ -84,7 +89,7 @@ def p_group_recursive(p):
 
 def p_group_note(p):
     ''' group : notepp '''
-    p[0] = AST.TokenNode(p[1])
+    p[0] = p[1]
 
 
 def p_tempo(p):
@@ -124,7 +129,6 @@ def p_note_figure(p):
 
 def p_note_gamme(p):
     ''' notepp : note ADD_OP NUMBER '''
-    # p[0] = AST.GammeNode(children=[p[1]] + [AST.TokenNode(p[3])], op=p[2])
     p[0] = AST.NotePlusPlus(AST.GammeNode(children=[p[1]] + [AST.TokenNode(p[3])], op=p[2]))
 
 
