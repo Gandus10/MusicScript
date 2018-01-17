@@ -1,4 +1,4 @@
-frere_jacques = (DO,RE,MI,DO);
+frere_jacques = (DO;RE;MI;DO);
 dormez_vous = (MI,FA,$SOL);
 matines = (!SOL,!LA,!SOL,!FA,MI,DO);
 ding_dong = (DO,SOL-1,$DO);

@@ -2,7 +2,7 @@ import AST
 import binascii
 from AST import addToClass
 
-DEBUG = True
+DEBUG = False
 
 MTHD = "4d546864"
 MTRK = "4d54726b"

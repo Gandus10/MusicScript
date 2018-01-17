@@ -83,7 +83,8 @@ def p_assignation(p):
 
 
 def p_group_recursive(p):
-    ''' group : notepp ',' group'''
+    ''' group : notepp ',' group
+        | notepp ';' group '''
     p[0] = AST.ChansonnetteNode([p[1]] + p[3].children)
 
 
