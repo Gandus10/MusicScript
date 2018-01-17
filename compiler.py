@@ -62,13 +62,15 @@ operations = {
 }
 
 FIGURES = {
-    '@': 4, # Ronde
-    '$': 2, # Blanche
-    '?': 1, # Noire
-    '!': 1 / 2 # Croche
+    '@': 4,  # Ronde
+    '$': 2,  # Blanche
+    '?': 1,  # Noire
+    '!': 1 / 2  # Croche
 }
 
-vars = {}
+vars = {
+    'tempo': DELTA_TIME_DEFAULT
+}
 
 
 def int_to_hex(val, nb_bytes_desired):
@@ -147,7 +149,8 @@ def compile(self):
         print('TOKEN NODE', self.tok)
     bytecode = ""
     try:
-        bytecode += vars[self.tok]
+        # Definit le tempo pour les notes des variables
+        bytecode += vars[self.tok].replace(' ', vars['tempo'])
     except:
         print("var not found", self.tok)
     return bytecode
@@ -173,17 +176,14 @@ def compile(self, gamme=0, op=''):
         print('NOTE NODE', self.note)
     bytecode = ""
 
+    tempo = ' '
     # Recherche du tempo
     try:
         tempo = vars['time']
         del vars['time']
     except(KeyError):
         # Tempo par defaut
-        tempo = DELTA_TIME_DEFAULT
-        try:
-            tempo = vars['tempo']
-        except(KeyError):
-            pass
+        pass
 
     # Récupération de l'hexa dans le dict de notes
     note = NOTES[self.note]
@@ -252,7 +252,7 @@ def compile(self):
             while i + 1 < size and type(self.children[i + 1]) is AST.TimeNode:
                 self.children[i + 1].compile()
                 i += 1
-        bytecode += c.compile()
+        bytecode += c.compile().replace(' ', vars['tempo'])
         i += 1
 
     bytecode = DELTA_TIME_ZERO + vars['instrument'] + \

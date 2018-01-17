@@ -1,0 +1,7 @@
+ma_note = (DO,DO,$DO,@RE-1);
+
+track(
+    INSTRUMENT=PIANO;
+    TEMPO=2000;
+    ma_note
+)

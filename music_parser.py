@@ -89,7 +89,7 @@ def p_group_recursive(p):
 
 def p_group_note(p):
     ''' group : notepp '''
-    p[0] = p[1]
+    p[0] = AST.ChansonnetteNode(p[1])
 
 
 def p_tempo(p):
