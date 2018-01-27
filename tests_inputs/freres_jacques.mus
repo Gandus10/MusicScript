@@ -4,8 +4,8 @@ matines = (!SOL,!LA,!SOL,!FA,MI,DO);
 ding_dong = (DO,SOL-1,$DO);
 
 track(
-    INSTRUMENT=PIANO;
-    TEMPO=200;
+    INSTRUMENT=SYNTHPAD;
+    TEMPO=400;
     loop 10{
         loop 2 {
             frere_jacques

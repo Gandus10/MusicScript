@@ -1,14 +1,13 @@
-
 track (
     INSTRUMENT=PIANO;
     TEMPO=500;
     silence = 1000;
-    loop 60 {
+    loop 6 {
         SOL
     }
 );
 
-my_tune = (DO,RE,MI,FA,SOL,LA,SI);
+my_tune = (DO,RE,MI,FA,SOL,LA,SI,DO+1);
 
 track (
     INSTRUMENT=PIANO;

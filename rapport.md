@@ -17,18 +17,19 @@ numbersections: true
 
 # Introduction
 
-Le projet a été réalisé dans le cadre du cours "compilateur" par des élèves de troisième année dans la filière "Developpement Logiciel et Multimédia". Le but de ce projet est la programmation d’un compilateur. Il est réalisé en python en utilisant PLY.
+Le projet a été réalisé dans le cadre du cours "Compilateurs" par des élèves de troisième année dans la filière "Développement Logiciel et Multimédia". Le but de ce projet est la programmation d’un compilateur. Il est réalisé en python en utilisant PLY.
 
-Notre projet consiste à pouvoir lire un fichier .mus qui contient du texte décrivant une chanson et de le compiler en .mid. Ce fichier point mid contient de l'hexadécimal.
+Notre projet consiste à pouvoir écrire un fichier `.mus` qui contient du texte décrivant une chanson et de le compiler en un fichier midi, jouable par les logiciels de lecture audio. Ce fichier `.mid` contient de l'hexadécimal.
 
 # Structure d'un fichier mid
+D'après http://acad.carleton.edu/courses/musc108-00-f14/pages/04/04StandardMIDIFiles.html.
 
 ## Header Chunk
 
 - un MThd -> 4 bytes
-- Lenght -> 4 bytes
+- Length -> 4 bytes
 - SMF Type -> 2 bytes
-- Number of Tracks -> bytes
+- Number of Tracks -> 2 bytes
 - PPQ Value -> 2 bytes
 
 ## Track Chunk 1 (meta-events and tempo events)
@@ -53,16 +54,15 @@ Notre projet consiste à pouvoir lire un fichier .mus qui contient du texte déc
 - PPQ Reset All Controllers Message
 - PPQ End of Track Message
 
-Pour avoir plusieurs track dans notre fichier, il suffit d'avoir le même format que la Track Chunk 2.
+Pour avoir plusieurs track dans notre fichier, il suffit d'avoir le même format que la Track Chunk 2. La Track Chunk 2 est facultative.
 
 # Conception
 
 ## But du projet
 
 Le but de ce compilateur est de pouvoir compiler un fichier mus en un fichier mid, notre fichier mus contiendra certaines instructions :
-- assignation de track afin d'être réutilisé
+- assignation de variables afin d'être réutilisé
 - loop
-- refrain
 - fonction silence
 - fonction tempo
 - note
@@ -70,45 +70,97 @@ Le but de ce compilateur est de pouvoir compiler un fichier mus en un fichier mi
 il sera construit de la manière suivante
 
 ```
-track(
-    GUITAR;
-    tempo = 2;
-    LA;
-    SI;
-    MI;
-    SI;
-    LA;
-    silence = 2
+track (
+    INSTRUMENT=PIANO;
+    TEMPO=500;
+    silence = 1000;
+    loop 6 {
+        SOL
+    }
 );
 
-my_tune = (LA,DO,RE,MI,FA);
+my_tune = (DO,RE,MI,FA,SOL,LA,SI,DO+1);
 
 track (
-    PIANO;
-    tempo = 2;
+    INSTRUMENT=PIANO;
+    TEMPO=500;
     loop 5 {
-        FA;
-        SOL;
-        my_tune;
-        FA
+        my_tune
     };
     SOL;
     SOL
 )
 ```
+
+## Fonctionnalités
+
+### Instruments
+On peut définir l'instrument pour chaque track avec une affectation à `INSTRUMENT`.
+
+Les instruments disponibles sont :
+- `GUITAR`
+- `VIOLIN`
+- `PIANO`
+- `FLUTE`
+- `SYNTHPAD`
+- `HELICOPTER`
+
+Exemple: `INSTRUMENT = PIANO;`
+
+### Notes
+On peut écrire toute la gamme de note : `DO`, `RE`, `MI`, `FA`, `SOL`, `LA`, `SI`.
+
+On peut également ajouter des modificateurs à ces notes, par exemple définir quelle figure c'est, exemple pour une ronde : `@DO`.
+
+Les figures se présentent comme ceci : 
+
+|  `@`  |   `$`   |  `?`  |   `!`  |      `.`      |
+|:-----:|:-------:|:-----:|:------:|:-------------:|
+| Ronde | Blanche | Noire | Croche | Double croche |
+
+On peut également changer d'octave pour chaque note avec les opérateurs `+` et `-`, par exemple : `DO+2`, `RE-1`. `+x` correspond à `x` octaves plus hautes et `-x` à `x` octaves plus basses. On peut descendre jusqu'à 4 octaves, et monter jusqu'à 5 octaves
+
+### Boucles
+Il est possible de boucler sur un ensemble de notes, cela permet de répéter une séquence musicale. Les boucles se font avec `loop x`, avec x un nombre entier positif.
+
+Cet exemple va répéter 5 fois la séquence `DO; RE; MI;` :
+```
+loop 5 {
+    DO; RE; MI;
+}
+```
+
+### Assignation de variables
+Il est possible d'ajouter un groupe de note dans une variable afin que cette suite de note puisse être réutilisée plusieurs fois.
+
+Exemple : 
+
+Assignation : `ding_dong = (DO,SOL-1,$DO);`
+
+Puis par exemple dans une boucle : 
+```
+loop 5 {
+    ding_dong
+}
+```
+
 ## Lex
 
-Nous avons commencés par définir les mots réservé et les tokens
+Nous avons commencé par définir les mots réservés, les tokens et les literals
 
 ```python
+
 reserved_words = (
     'track',
     'silence',
+    'time',
     'loop',
     'violin',
     'guitar',
     'piano',
-    'tempo',
+    'flute',
+    'synthpad',
+    'helicopter',
     'do',
     're',
     'mi',
@@ -120,18 +172,27 @@ reserved_words = (
 
 tokens = (
              'NUMBER',
+             'TEMPO',
              'IDENTIFIER',
              'NOTE',
-             'INSTRUMENT'
+             'INSTRUMENT',
+             'ADD_OP',
+             'FIGURE'
          ) + tuple(map(lambda s: s.upper(), reserved_words))
+
+literals = '(){};=,'
 
 ```
 
-Nous avons ensuite utilisé les expression regulière. Exemple pour les instruments.
+Nous avons ensuite utilisé les expression regulière. Exemple pour les instruments et les figures de notes.
 
 ```python
 def t_INSTRUMENT(t):
-    r'(GUITAR)|(VIOLIN)|(PIANO)'
+    r'(GUITAR)|(VIOLIN)|(PIANO)|(FLUTE)|(SYNTHPAD)|(HELICOPTER)'
+    return t
+
+def t_FIGURE(t):
+    r'[@$?!.]'
     return t
 ```
 
@@ -140,27 +201,25 @@ def t_INSTRUMENT(t):
 Nous avons défini notre grammaire
 
 ```
-song : partition
-song : partition ';' song
-partition : track | assignation
-track : TRACK '(' instruction ')'
-instruction : statement ';' instruction
-instruction : statement
-statement : silence | tempo | note | instrument | structure
-structure : LOOP NUMBER '{' chansonnette '}'
-chansonnette : expression
-chansonnette : expression ';' chansonnette
-expression : IDENTIFIER | group | silence | structure
-assignation : IDENTIFIER '=' '(' group ')'
-group : NOTE
-group : NOTE ';' group
-tempo : TEMPO '=' NUMBER
-silence : SILENCE '=' NUMBER
-note : NOTE
-instrument : INSTRUMENT
+song -> partition | partition ; song
+partition -> track | assignation
+track -> TRACK ( instruction )
+instruction -> statement | statement ; instruction
+statement -> silence | tempo | time | notepp | instrument | structure | IDENTIFIER
+structure -> LOOP NUMBER { chansonnette }
+chansonnette -> expression | expression ; chansonnette
+expression -> IDENTIFIER | notepp | silence | structure
+assignation -> IDENTIFIER = ( group )
+group -> notepp , group | notepp ; group | notepp
+tempo -> TEMPO = NUMBER
+time -> TIME = NUMBER
+silence -> SILENCE = NUMBER
+note -> NOTE
+notepp -> note | FIGURE note ADD_OP NUMBER | FIGURE note | note ADD_OP NUMBER
+instrument -> IDENTIFIER = INSTRUMENT
 ```
 
-Exemple pour les chansonnettes récursives.
+Exemple pour les chansonnettes récursives :
 
 ```python
 def p_chansonnette_recursive(p):
@@ -174,12 +233,11 @@ def p_chansonnette_recursive(p):
 
 ## Compiler
 
-Pour le compiler, nous avons transformer nos expression en code héxadécimal. Chaque expression, notes, instruments en-tête à un code qui lui correspond.
+Pour le compiler, nous avons transformé nos expressions en code héxadécimal. Chaque expression, notes, instruments, en-tête, etc. ont un code qui leur correspondent.
 
-Exemple pour quelques constantes obligatoire pour les fichier .mid
+Exemple pour quelques constantes obligatoire pour les fichier `.mid` :
 
 ```python
-DEBUG = True
 MTHD = "4d546864"
 MTRK = "4d54726b"
 END_OF_TRACK = "ff2f00"
@@ -187,17 +245,17 @@ SMF = "0001"
 PPQ = "03e8"
 ```
 
-Exemple pour les notes et les instruments.
+Exemple pour les notes et les instruments
 
 ```python
 NOTES = {
-    'DO': '30',
-    'RE': '32',
-    'MI': '34',
-    'FA': '35',
-    'SOL': '37',
-    'LA': '39',
-    'SI': '3b'
+    'DO': '30',  # 48
+    'RE': '32',  # 50
+    'MI': '34',  # 52
+    'FA': '35',  # 53
+    'SOL': '37',  # 55
+    'LA': '39',  # 57
+    'SI': '3b'  # 59
 }
 
 INSTRUMENTS = {
@@ -210,17 +268,35 @@ INSTRUMENTS = {
 }
 ```
 
+Pour les figures des notes, nous avons défini pour chaque figure un facteur de durée de la note par rapport à la normale :
 
-
-
-
-
-
+```python
+FIGURES = {
+    '@': 4,  # Ronde
+    '$': 2,  # Blanche
+    '?': 1,  # Noire
+    '!': 1 / 2,  # Croche
+    '.': 1 / 4  # Double croche
+}
+```
 
 # Conclusion
+
+## Etat du projet
+Le compilateurs est fonctionnel et il est possible d'écouter les fichiers audios générés. Nous avons par exemple pu écrire Frère Jacques.
+Toutes les fonctionnalités implémentés fonctionnent. Cependant les track débutent toutes en même temps, le format MIDI est prévu ainsi. Il est possible de palier à ce souci en ajoutant des silences au début d'une track à décaler.
+
+## Améliorations possibles
+- Ajouter la possibilité de définir un offset au début d'une track pour qu'elle se joue avec un temps de décalage.
+- Ajouter la prise en charges des dièse et bémol.
+- Ajouter des instruments
 
 # Sources
 - http://www.shikadi.net/moddingwiki/MID_Format
 - https://www.wavosaur.com/download/midi-note-hex.php
 - http://www.ccarh.org/courses/253/handout/smf/
 - http://acad.carleton.edu/courses/musc108-00-f14/pages/04/04StandardMIDIFiles.html
+- https://www.noterepeat.com/articles/how-to/213-midi-basics-common-terms-explained
+- https://www.csie.ntu.edu.tw/~r92092/ref/midi/
+- http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm
+- http://www.ccarh.org/courses/253/handout/gminstruments/

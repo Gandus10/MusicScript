@@ -207,6 +207,10 @@ def compile(self):
     """ Change la gamme d'une note. """
     if DEBUG:
         print('GAMME NODE : ' + self.children[0].note, self.children[1].tok)
+    if (self.op == '+' and self.children[1].tok > 5):
+        raise OverflowError(f"Octave too high. {self.children[0].note}{self.op}{self.children[1].tok}")
+    if (self.op == '-' and self.children[1].tok > 4):
+        raise OverflowError(f"Octave too low. {self.children[0].note}{self.op}{self.children[1].tok}")
     bytecode = ""
     bytecode += self.children[0].compile(self.children[1].tok, self.op)
     return bytecode
