@@ -1,6 +1,5 @@
 # MusicScript
-
-Program who convert text to music.
+Compiler who convert text to music.
 
 ## Functionality
 - Note : `DO`, `RE`, etc.
@@ -12,7 +11,7 @@ Program who convert text to music.
     - Double croche : `.DO`
 - Change octave witch `+` or `-` : `DO+2`, `RE-1`
 - Loop to play a note several times or a note sequence : `loop 10 {...}`
-- Function silence, ex : `silence = 1000`
+- Silence before or after a note : `silence = 1000`
 - Assign some notes to var to be reused : `ding_dong = (DO,SOL-1,$DO);`
 - Set tempo for a track : `TEMPO = 500`
 
@@ -20,7 +19,7 @@ Program who convert text to music.
 - Input = text file (.mus)
 - Output = MIDI file (.mid), playable by music player like Windows Media Player
 
-## Example : Frere Jacques
+## Example : Frère Jacques
 - text file :
 
 ```
@@ -88,11 +87,15 @@ instrument -> IDENTIFIER = INSTRUMENT
 ```
 
 ## Documentation
-
 - http://www.shikadi.net/moddingwiki/MID_Format
 - https://www.wavosaur.com/download/midi-note-hex.php
 - http://www.ccarh.org/courses/253/handout/smf/
 - http://acad.carleton.edu/courses/musc108-00-f14/pages/04/04StandardMIDIFiles.html
+- https://www.noterepeat.com/articles/how-to/213-midi-basics-common-terms-explained
+- https://www.csie.ntu.edu.tw/~r92092/ref/midi/
+- http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm
+- http://www.ccarh.org/courses/253/handout/gminstruments/
+
 
 
 ## Authors
