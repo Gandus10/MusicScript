@@ -54,7 +54,7 @@ D'après http://acad.carleton.edu/courses/musc108-00-f14/pages/04/04StandardMIDI
 - PPQ Reset All Controllers Message
 - PPQ End of Track Message
 
-Pour avoir plusieurs track dans notre fichier, il suffit d'avoir le même format que la Track Chunk 2. La Track Chunk 2 est facultative.
+Pour avoir plusieurs track dans notre fichier, il suffit d'avoir le même format que la Track Chunk 2. La Track Chunk 1 est facultative.
 
 # Conception
 
