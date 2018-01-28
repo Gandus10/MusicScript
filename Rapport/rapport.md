@@ -1,13 +1,25 @@
-# Introduction
+# Rapport MusicScript
+Rapport du projet MusicScript du cours de compilateurs
+
+<div style="text-align: right;">28.01.2018</div>
+
+### Auteurs
+- Thibaut Piquerez
+- Laurent Gander
+- Sylvain Renaud
+
+<div style="text-align: center;"><img src="img/logo.jpg" width="40%" text-align="center"></div>
+
+## Introduction
 
 Le projet a été réalisé dans le cadre du cours "Compilateurs" par des élèves de troisième année dans la filière "Développement Logiciel et Multimédia". Le but de ce projet est la programmation d’un compilateur. Il est réalisé en python en utilisant PLY.
 
 Notre projet consiste à pouvoir écrire un fichier `.mus` qui contient du texte décrivant une chanson et de le compiler en un fichier midi, jouable par les logiciels de lecture audio. Ce fichier `.mid` contient de l'hexadécimal.
 
-# Structure d'un fichier mid
+## Structure d'un fichier mid
 D'après http://acad.carleton.edu/courses/musc108-00-f14/pages/04/04StandardMIDIFiles.html.
 
-## Header Chunk
+### Header Chunk
 
 - un MThd -> 4 bytes
 - Length -> 4 bytes
@@ -15,7 +27,7 @@ D'après http://acad.carleton.edu/courses/musc108-00-f14/pages/04/04StandardMIDI
 - Number of Tracks -> 2 bytes
 - PPQ Value -> 2 bytes
 
-## Track Chunk 1 (meta-events and tempo events)
+### Track Chunk 1 (meta-events and tempo events)
 
 - MThd -> 4 bytes
 - PPQ -> Time Signature meta-event 7 bytes
@@ -25,7 +37,7 @@ D'après http://acad.carleton.edu/courses/musc108-00-f14/pages/04/04StandardMIDI
 - PPQ -> changement de Tempo
 - PPQ -> End of Track Message
 
-## Track Chunk 2 First track (contient les messages NON NOF)
+### Track Chunk 2 First track (contient les messages NON NOF)
 - MTrk -> 4 bytes
 - PPQ -> Patch change messages
 - PPQ -> Reset all Controllers Message
@@ -39,9 +51,9 @@ D'après http://acad.carleton.edu/courses/musc108-00-f14/pages/04/04StandardMIDI
 
 Pour avoir plusieurs track dans notre fichier, il suffit d'avoir le même format que la Track Chunk 2. La Track Chunk 1 est facultative.
 
-# Conception
+## Conception
 
-## Objectifs du projet
+### Objectifs du projet
 
 Le but de ce compilateur est de pouvoir compiler un fichier mus en un fichier mid, notre fichier mus contiendra certaines instructions :
 - assignation de variables afin d'être réutilisé
@@ -75,9 +87,9 @@ track (
 )
 ```
 
-## Fonctionnalités
+### Fonctionnalités
 
-### Instruments
+#### Instruments
 On peut définir l'instrument pour chaque track avec une affectation à `INSTRUMENT`.
 
 Les instruments disponibles sont :
@@ -90,7 +102,7 @@ Les instruments disponibles sont :
 
 Exemple: `INSTRUMENT = PIANO;`
 
-### Notes
+#### Notes
 On peut écrire toute la gamme de note : `DO`, `RE`, `MI`, `FA`, `SOL`, `LA`, `SI`.
 
 On peut également ajouter des modificateurs à ces notes, par exemple définir quelle figure c'est, exemple pour une ronde : `@DO`.
@@ -103,7 +115,7 @@ Les figures se présentent comme ceci :
 
 On peut également changer d'octave pour chaque note avec les opérateurs `+` et `-`, par exemple : `DO+2`, `RE-1`. `+x` correspond à `x` octaves plus hautes et `-x` à `x` octaves plus basses. On peut descendre jusqu'à 4 octaves, et monter jusqu'à 5 octaves
 
-### Boucles
+#### Boucles
 Il est possible de boucler sur un ensemble de notes, cela permet de répéter une séquence musicale. Les boucles se font avec `loop x`, avec x un nombre entier positif.
 
 Cet exemple va répéter 5 fois la séquence `DO; RE; MI;` :
@@ -113,7 +125,7 @@ loop 5 {
 }
 ```
 
-### Assignation de variables
+#### Assignation de variables
 Il est possible d'ajouter un groupe de note dans une variable afin que cette suite de note puisse être réutilisée plusieurs fois.
 
 Exemple : 
@@ -127,7 +139,7 @@ loop 5 {
 }
 ```
 
-### Tempo
+#### Tempo
 Au début de chaque track on peut paramétrer le tempo pour la track en question de la manière suivante:
 ```
 TEMPO=1000
@@ -142,7 +154,7 @@ BPM \* PPQ = 120 \* 1000 = 120'000 ticks/minute = 2'000 ticks/seconde
 Dans le format midi la valeur de durée de chaque note se compte en nombre de ticks. Donc avec les valeurs que nous avons ici cela signifie que si on met 2'000 ticks pour une note, elle va durer 1 seconde. Ensuite pour pouvoir écrire les tempos en millisecondes il suffit de multiplier par deux le chiffre qu'il y a dans le code.
 
 
-### Time
+#### Time
 Permet de modifier la durée d'une note.
 ```
 LA;
@@ -151,7 +163,7 @@ DO;
 ```
 Cela signifie que la note LA va durer 2 secondes et les durées des autres notes sera celui du tempo.
 
-### Silence
+#### Silence
 Permet de jouer une note silencieuse de la manière suivante:
 ```
 LA;
@@ -161,9 +173,9 @@ Mi;
 ```
 Cela veut dire qu'il y aura 1 seconde de silence entre le DO et le MI.
 
-# Implémentation
+## Implémentation
 
-## Lex
+### Lex
 
 Nous avons commencé par définir les mots réservés, les tokens et les literals
 
@@ -311,7 +323,7 @@ line 22: }(})
 line 23: )())
 ```
 
-## Parser
+### Parser
 
 Nous avons défini notre grammaire
 
@@ -350,7 +362,7 @@ Voir le fichier `freres_jacques-ast.pdf` pour visualiser l'arbre syntaxique prod
 Voir le fichier `freres_jacques-ast-threaded.pdf` pour visualiser l'arbre syntaxique produit par l'exemple _Frère Jacques_ avec les coutures.
 
 
-## AST
+### AST
 L'arbre syntaxique contient plusieurs types de noeuds. Chaque noeud hérite de `Node`. La liste des noeuds est la suivante :
 - `SongNode`, qui est le noeud racine de l'arbre
 - `InstructionNode`, qui est un container de tout ce qui peut se trouver dans une track
@@ -367,7 +379,7 @@ L'arbre syntaxique contient plusieurs types de noeuds. Chaque noeud hérite de `
 - `SilenceNode`, qui contient un nombre qui correspond au temps en millisecondes d'un silence
 - `LoopNode`, qui contient un nombre qui sera le nombre de fois ou la boucle va itérer
 
-## Compiler
+### Compiler
 
 Pour le compiler, nous avons transformé nos expressions en code héxadécimal. Chaque expression, notes, instruments, en-tête, etc. ont un code qui leur correspondent.
 
@@ -418,18 +430,18 @@ FIGURES = {
 
 Le fichier généré par le compiler est le fichier `.mid`. Ouvrez le fichier `frere_jacques.mid` avec un lecteur de musique compatible pour écouter l'exemple _Frère Jacques_.
 
-# Conclusion
+## Conclusion
 
-## Etat du projet
+### Etat du projet
 Le compilateurs est fonctionnel et il est possible d'écouter les fichiers audios générés. Nous avons par exemple pu écrire la célèbre chansonnette _Frère Jacques_.
 Toutes les fonctionnalités implémentés fonctionnent. Cependant les track débutent toutes en même temps, le format MIDI est prévu ainsi. Il est possible de palier à ce souci en ajoutant des silences au début d'une track à décaler.
 
-## Améliorations possibles
+### Améliorations possibles
 - Ajouter la possibilité de définir un offset au début d'une track pour qu'elle se joue avec un temps de décalage.
 - Ajouter la prise en charges des dièse et bémol.
 - Ajouter des instruments
 
-# Sources
+## Sources
 - http://www.shikadi.net/moddingwiki/MID_Format
 - https://www.wavosaur.com/download/midi-note-hex.php
 - http://www.ccarh.org/courses/253/handout/smf/
