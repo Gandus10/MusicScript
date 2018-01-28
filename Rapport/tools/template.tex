@@ -1,0 +1,259 @@
+%----------------------------------------------------------------------------------------
+%	DOCUMENT
+%----------------------------------------------------------------------------------------
+
+\documentclass$if(pagesize)$[$pagesize$$else$[a4$endif$paper, francais]{article}
+\def\tightlist{}
+
+%----------------------------------------------------------------------------------------
+%	Packages
+%----------------------------------------------------------------------------------------
+
+\usepackage{pdflscape}
+\usepackage[hmargin=2.5cm,vmargin=2.5cm]{geometry}
+\usepackage{listings}
+\usepackage{textcomp}
+\usepackage{float}
+% next if block comes from : https://tex.stackexchange.com/a/215284
+\ifpdf % We're generating a pdf
+    \usepackage[pdftex]{color,graphicx}
+    \usepackage{thumbpdf}
+\else
+    \usepackage[dvips]{graphicx}
+\fi
+\usepackage{polyglossia}
+\setmainlanguage{$if(language)$$language$$else$english$endif$}
+\usepackage{sectsty}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage[T1]{fontenc}
+\usepackage{multicol}
+\usepackage[figure]{totalcount}
+\usepackage[bottom]{footmisc}
+%----------------------------------------------------------------------------------------
+%   SETTINGS CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\setlength{\parindent}{0pt} % Remove indetation at the begining of paragraph
+\renewcommand{\thesection}{\arabic{section}}
+\allsectionsfont{\bfseries\sffamily} % Section are sans serif
+
+\renewcommand{\thepage}{\roman{page}} % Change page numbers to roman
+
+\DeclareTextCommand{\nobreakspace}{T1}{\leavevmode\nobreak\ }
+%----------------------------------------------------------------------------------------
+%   HEADER AND FOOTER
+%----------------------------------------------------------------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{$for(author)$$if(author.lastname)$$author.lastname$$else$$author$$endif$$sep$, $endfor$}
+\lhead{$if(title)$$title$$endif$}
+\cfoot{\thepage}
+
+%----------------------------------------------------------------------------------------
+%	LISTINGS
+%----------------------------------------------------------------------------------------
+
+\usepackage{listings}
+\usepackage{color}
+\usepackage[x11names, rgb, html]{xcolor}
+\usepackage{pdfpages}
+
+\lstset{ %
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  xleftmargin=\parindent,
+  frame=single,
+  showstringspaces=false,
+  basicstyle=\footnotesize,
+  keywordstyle=\bfseries\color{green!40!black},
+  commentstyle=\itshape\color{purple!40!black},
+  identifierstyle=\color{blue},
+  stringstyle=\color{orange},
+  %numerotation parameters
+  numberstyle=\tiny\color{black},
+  numbers=left,
+  numbersep= 5pt,
+  stepnumber= 5,
+}
+
+%----------------------------------------------------------------------------------------
+%	Tables
+%----------------------------------------------------------------------------------------
+% Table formatting:
+% What if you make a table? -- Pandoc knows, of course, and
+% then declares that its  variable `table` is True and
+% imports a table package suitable to its pleasantly simple tables.
+% Needless to say infinitely   complicated tables are possible in
+% LaTeX with suitable packages. We are spared the temptation:
+% Source : https://gist.github.com/bosmacs/1052004
+
+$if(tables)$
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{booktabs}
+
+$endif$
+
+%----------------------------------------------------------------------------------------
+%
+%                           DOCUMENT
+%
+%----------------------------------------------------------------------------------------
+
+
+\begin{document}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\begin{titlepage}
+\newgeometry{hmargin=2cm,vmargin=4cm}
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for the horizontal lines, change thickness here
+
+\center % Center everything on the page
+
+%----------------------------------------------------------------------------------------
+%	HEADING SECTIONS
+%----------------------------------------------------------------------------------------
+$if(institut.name)$
+\textsc{\LARGE $institut.name$}\\[1.5cm] % Name of your university/college
+$endif$
+$if(subtitle)$
+\textsc{\Large $subtitle$}\\[0.5cm] % Major heading such as course name
+$endif$
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+$if(title)$
+\HRule \\[0.4cm]
+{ \huge \bfseries $title$}\\[0.4cm] % Title of your document
+\HRule \\[1.5cm]
+$endif$
+
+%----------------------------------------------------------------------------------------
+%	AUTHOR SECTION
+%----------------------------------------------------------------------------------------
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Auteurs:}\\
+$for(author)$
+$if(author.lastname)$
+    \textsc{$author.lastname$}
+    $if(author.firstname)$
+        $author.firstname$
+    $endif$
+$else$
+$author$
+$endif$
+$sep$\newline
+$endfor$
+\end{flushleft}
+\end{minipage}
+~
+\begin{minipage}{0.4\textwidth}
+\begin{flushright} \large
+\emph{Responsables:} \\
+\hfill
+$for(responsable)$
+$if(responsable.lastname)$
+    \textsc{$responsable.lastname$}
+    $if(responsable.firstname)$
+        $responsable.firstname$
+    $endif$
+$else$
+$responsable$
+$endif$
+$sep$\newline
+$endfor$
+\end{flushright}
+\end{minipage}\\[2cm]
+
+% If you don't want a supervisor, uncomment the two lines below and remove the section above
+%\Large \emph{Author:}\\
+%John \textsc{Smith}\\[3cm] % Your name
+
+
+%----------------------------------------------------------------------------------------
+%	DATE SECTION
+%----------------------------------------------------------------------------------------
+{\large $if(date)$$date$$else$\today$endif$}\\[1cm] % Date, change the \today to a set date if you want to be precise
+
+$if(abstractontitlepage)$
+    %----------------------------------------------------------------------------------------
+    %	ABSTRACT SECTION
+    %----------------------------------------------------------------------------------------
+    \vfill % Fill the rest of the page with whitespace before the logo
+
+    $if(abstract)$
+    $abstract$
+    $endif$
+$endif$
+
+\vfill % Fill the rest of the page with whitespace before the logo
+%----------------------------------------------------------------------------------------
+%	LOGO SECTION
+%----------------------------------------------------------------------------------------
+$if(project_logo)$
+\includegraphics$if(project_logo_scale)$[scale=$project_logo_scale$]$endif${$project_logo$}\\[2cm]
+$endif$
+$if(institut.logo)$
+\includegraphics$if(institut.logo_scale)$[scale=$institut.logo_scale$]$endif${$institut.logo$}\\[1cm]
+$endif$
+%----------------------------------------------------------------------------------------
+\restoregeometry
+\end{titlepage}
+$if(abstractontitlepage)$
+$else$
+    %----------------------------------------------------------------------------------------
+    %	ABSTRACT SECTION
+    %----------------------------------------------------------------------------------------
+
+    $if(abstract)$
+    $abstract$
+    \newpage
+    $endif$
+$endif$
+%----------------------------------------------------------------------------------------
+% TOC AND LOF
+%----------------------------------------------------------------------------------------
+
+$if(toc)$
+{
+\hypersetup{linkcolor=black}
+\setcounter{tocdepth}{$toc-depth$}
+\tableofcontents
+}
+$endif$
+$if(lof)$
+\iftotalfigures
+  \listoffigures
+\fi
+$endif$
+
+\newpage
+%----------------------------------------------------------------------------------------
+% SUMMARY CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+\renewcommand{\thesection}{\arabic{section}} % Set section numbers to integers (1, 2, 3, ...)
+\setcounter{section}{0}
+\setcounter{page}{1}
+\renewcommand\thepage{\arabic{page}} % Change page numbers to arabic
+
+%----------------------------------------------------------------------------------------
+% File body
+%----------------------------------------------------------------------------------------
+
+$if(alignment)$
+\begin{$alignment$}
+$endif$
+
+$body$
+
+$if(alignment)$
+\end{$alignment$}
+$endif$
+
+
+\end{document}

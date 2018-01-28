@@ -1,90 +1,117 @@
 # MusicScript
-
-Program who convert text to music.
+Compiler who convert text to music.
 
 ## Functionality
-- function note, ex : DO
-- loop to play a note several times or a note sequence, ex : loop(10){...}
-- function silence, ex : silence = 12
-- assign track to var to be reused
+- Note : `DO`, `RE`, etc.
+- Note figure 
+    - Ronde : `@DO`
+    - Blanche :`$DO`
+    - Noire : `?DO`
+    - Croche : `!DO`
+    - Double croche : `.DO`
+- Change octave witch `+` or `-` : `DO+2`, `RE-1`
+- Loop to play a note several times or a note sequence : `loop 10 {...}`
+- Silence before or after a note : `silence = 1000`
+- Assign some notes to var to be reused : `ding_dong = (DO,SOL-1,$DO);`
+- Set tempo for a track : `TEMPO = 500`
 
 ## Input/Output
 - Input = text file (.mus)
-- Output = MIDI file (.mid)
+- Output = MIDI file (.mid), playable by music player like Windows Media Player
 
-## Example
+## Example : Frère Jacques
 - text file :
 
 ```
-track (
-    VIOLIN;
-    SOL;
-    DO
-);
+frere_jacques = (DO;RE;MI;DO);
+dormez_vous = (MI,FA,$SOL);
+matines = (!SOL,!LA,!SOL,!FA,MI,DO);
+ding_dong = (DO,SOL-1,$DO);
 
-track (
-    tempo = 29;
-    DO
-);
-
-track (
-    silence = 2
-);
-
-track (
-    loop 2 {
-        DO;
-        RE;
-        silence = 4;
-        loop 89 {
-            DO
+track(
+    INSTRUMENT=PIANO;
+    TEMPO=400;
+    loop 10{
+        loop 2 {
+            frere_jacques
+        };
+        loop 2 {
+            dormez_vous
+        };
+        loop 2 {
+            matines
+        };
+        loop 2{
+            ding_dong
         }
     }
 )
 ```
 
-- MIDI file (not corresponding)
+- MIDI file (not complete)
 
 ```
-4d 54 68 64 00 00 00 06 00 01 00 01 01 e0 4d 54
-72 6b 00 00 00 44 00 c0 0e 00 b0 79 00 00 b0 40
-00 00 b0 5b 30 00 b0 0a 40 00 b0 07 64 00 ff 03
-01 20 00 90 3e 48 81 70 80 3e 00 00 90 3e 48 81
-70 80 3e 00 00 90 3e 48 81 70 80 3e 00 00 90 3e
-48 81 70 80 3e 00 01 ff 2f 00
+4d54 6864 0000 0006 0001 0001 03e8 4d54
+726b 0000 0b60 00c0 5800 b079 0000 b040
+0000 b05b 3000 b00a 4000 b007 6400 ff03
+0120 0090 3048 8620 8030 0000 9032 4886
+2080 3200 0090 3448 8620 8034 0000 9030
+4886 2080 3000 0090 3048 8620 8030 0000
+9032 4886 2080 3200 0090 3448 8620 8034
+0000 9030 4886 2080 3000 0090 3448 8620
+8034 0000 9035 4886 2080 3500 0090 3748
+8c40 8037 0000 9034 4886 2080 3400 0090
+...
 ```
 
 
 ## Grammar
+```
+song -> partition | partition ; song
+partition -> track | assignation
+track -> TRACK ( instruction )
+instruction -> statement | statement ; instruction
+statement -> silence | tempo | time | notepp | instrument | structure | IDENTIFIER
+structure -> LOOP NUMBER { chansonnette }
+chansonnette -> expression | expression ; chansonnette
+expression -> IDENTIFIER | notepp | silence | structure
+assignation -> IDENTIFIER = ( group )
+group -> notepp , group | notepp ; group | notepp
+tempo -> TEMPO = NUMBER
+time -> TIME = NUMBER
+silence -> SILENCE = NUMBER
+note -> NOTE
+notepp -> note | FIGURE note ADD_OP NUMBER | FIGURE note | note ADD_OP NUMBER
+instrument -> IDENTIFIER = INSTRUMENT
+```
+
+## Requirements
+You need Python 3.6 or greater to use this programm. Also you need to have PLY and pydot modules.
 
 ```
-song : partition
-song : partition ';' song
-partition : track | assignation
-track : TRACK '(' instruction ')'
-instruction : statement ';' instruction
-instruction : statement
-statement : silence | tempo | note | instrument | structure
-structure : LOOP NUMBER '{' chansonnette '}'
-chansonnette : expression
-chansonnette : expression ';' chansonnette
-expression : IDENTIFIER | group | silence | structure
-assignation : IDENTIFIER '=' '(' group ')'
-group : NOTE
-group : NOTE ';' group
-tempo : TEMPO '=' NUMBER
-silence : SILENCE '=' NUMBER
-note : NOTE
-instrument : INSTRUMENT
+pip install ply
+pip install pydot
 ```
+
+## Usage
+Try with Frère Jacques mus file! 
+
+```
+python compiler.py tests_inputs\freres_jacques.mus
+```
+
+Don't care about warnings about unused TOKEN.
+If you have a warning about a generated folder, manually create a generated folder beside of the compiler.py file.
 
 ## Documentation
-
 - http://www.shikadi.net/moddingwiki/MID_Format
 - https://www.wavosaur.com/download/midi-note-hex.php
 - http://www.ccarh.org/courses/253/handout/smf/
 - http://acad.carleton.edu/courses/musc108-00-f14/pages/04/04StandardMIDIFiles.html
-
+- https://www.noterepeat.com/articles/how-to/213-midi-basics-common-terms-explained
+- https://www.csie.ntu.edu.tw/~r92092/ref/midi/
+- http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm
+- http://www.ccarh.org/courses/253/handout/gminstruments/
 
 ## Authors
 - Piquerez Thibaut

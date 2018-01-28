@@ -1,20 +1,9 @@
 track(
     INSTRUMENT=SYNTHPAD;
     TEMPO=500;
-    DO;
-    RE;
-    MI;
-    FA;
-    silence=3000;
-    SOL;
-    LA;
-    SI;
-    TIME=3000;
-    LA;
-    SOL;
-    FA;
-    MI;
-    RE;
-    DO;
-    silence=2000
+    DO+5;
+    DO-4;
+    DO+5;
+    DO-3;
+    RE
 )
