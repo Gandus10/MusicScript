@@ -1,0 +1,46 @@
+---
+title: Rapport MusicScript
+subtitle: Projet de compilateurs
+lang: fr
+language: french
+author:
+- Piquerez Thibaut^[thibaut.piquerez@he-arc.ch]
+- Renaud Sylvain^[sylvain.renaud@he-arc.ch]
+- Gander Laurent^[laurent.gander@he-arc.ch]
+
+responsable:
+- lastname: Tièche
+  firstname: François
+
+date: \today
+pagesize: a4
+
+institut:
+  name: HE-Arc
+  logo: img/logo.jpg
+  logo_scale: 0.6
+
+project_logo: img/logo
+project_logo_scale: 0.4
+
+# styles
+#alignment: <alignment>
+fontsize: 12pt
+colorlinks: darkblue
+
+documentclass: scrreprt
+documentoptions: twoside
+
+numbersections: true
+
+# specify if you want your abstract on title page or on a second page
+abstractontitlepage: false
+
+toc: true
+toc-depth: 1
+lof: true
+
+abstract: |
+    Ce document décrit les fonctionnalités et les détails d'implémentation de notre projet MusicScript. Ce projet permet de compiler un fichier texte en une musique, dans un fichier midi.
+
+---
