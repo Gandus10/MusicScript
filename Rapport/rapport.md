@@ -168,7 +168,6 @@ Cela veut dire qu'il y aura 1 seconde de silence entre le DO et le MI.
 Nous avons commencé par définir les mots réservés, les tokens et les literals
 
 ```python
-
 reserved_words = (
     'track',
     'silence',
@@ -200,7 +199,6 @@ tokens = (
          ) + tuple(map(lambda s: s.upper(), reserved_words))
 
 literals = '(){};=,'
-
 ```
 
 Nous avons ensuite utilisé les expression regulière. Exemple pour les instruments et les figures de notes.
