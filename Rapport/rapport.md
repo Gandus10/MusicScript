@@ -174,6 +174,7 @@ Mi;
 Cela veut dire qu'il y aura 1 seconde de silence entre le DO et le MI.
 
 ## Implémentation
+Tous les exemples se basent sur le fichier `assets/frere_jacques.mus`.
 
 ### Lex
 
@@ -358,8 +359,8 @@ def p_chansonnette_recursive(p):
         p[0] = AST.ChansonnetteNode(p[1])
 ```
 
-Voir le fichier `freres_jacques-ast.pdf` pour visualiser l'arbre syntaxique produit par l'exemple _Frère Jacques_.
-Voir le fichier `freres_jacques-ast-threaded.pdf` pour visualiser l'arbre syntaxique produit par l'exemple _Frère Jacques_ avec les coutures.
+Voir le fichier `assets/freres_jacques-ast.pdf` pour visualiser l'arbre syntaxique produit par l'exemple _Frère Jacques_.
+Voir le fichier `assets/freres_jacques-ast-threaded.pdf` pour visualiser l'arbre syntaxique produit par l'exemple _Frère Jacques_ avec les coutures.
 
 
 ### AST
@@ -428,7 +429,7 @@ FIGURES = {
 }
 ```
 
-Le fichier généré par le compiler est le fichier `.mid`. Ouvrez le fichier `frere_jacques.mid` avec un lecteur de musique compatible pour écouter l'exemple _Frère Jacques_.
+Le fichier généré par le compiler est le fichier `.mid`. Ouvrez le fichier `assets/frere_jacques.mid` avec un lecteur de musique compatible pour écouter l'exemple _Frère Jacques_.
 
 ## Conclusion
 
