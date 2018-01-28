@@ -1,0 +1,23 @@
+frere_jacques = (DO;RE;MI;DO);
+dormez_vous = (MI,FA,$SOL);
+matines = (!SOL,!LA,!SOL,!FA,MI,DO);
+ding_dong = (DO,SOL-1,$DO);
+
+track(
+    INSTRUMENT=SYNTHPAD;
+    TEMPO=400;
+    loop 10{
+        loop 2 {
+            frere_jacques
+        };
+        loop 2 {
+            dormez_vous
+        };
+        loop 2 {
+            matines
+        };
+        loop 2{
+            ding_dong
+        }
+    }
+)

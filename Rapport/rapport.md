@@ -58,7 +58,7 @@ Pour avoir plusieurs track dans notre fichier, il suffit d'avoir le même format
 
 # Conception
 
-## But du projet
+## Objectifs du projet
 
 Le but de ce compilateur est de pouvoir compiler un fichier mus en un fichier mid, notre fichier mus contiendra certaines instructions :
 - assignation de variables afin d'être réutilisé
@@ -178,6 +178,7 @@ Mi;
 ```
 Cela veut dire qu'il y aura 1 seconde de silence entre le DO et le MI.
 
+# Implémentation
 
 ## Lex
 
@@ -231,6 +232,104 @@ def t_FIGURE(t):
     return t
 ```
 
+Output pour l'exemple _Frère Jacques_ : 
+```
+line 1: IDENTIFIER(frere_jacques)
+line 1: =(=)
+line 1: ((()
+line 1: NOTE(DO)
+line 1: ;(;)
+line 1: NOTE(RE)
+line 1: ;(;)
+line 1: NOTE(MI)
+line 1: ;(;)
+line 1: NOTE(DO)
+line 1: )())
+line 1: ;(;)
+line 2: IDENTIFIER(dormez_vous)
+line 2: =(=)
+line 2: ((()
+line 2: NOTE(MI)
+line 2: ,(,)
+line 2: NOTE(FA)
+line 2: ,(,)
+line 2: FIGURE($)
+line 2: NOTE(SOL)
+line 2: )())
+line 2: ;(;)
+line 3: IDENTIFIER(matines)
+line 3: =(=)
+line 3: ((()
+line 3: FIGURE(!)
+line 3: NOTE(SOL)
+line 3: ,(,)
+line 3: FIGURE(!)
+line 3: NOTE(LA)
+line 3: ,(,)
+line 3: FIGURE(!)
+line 3: NOTE(SOL)
+line 3: ,(,)
+line 3: FIGURE(!)
+line 3: NOTE(FA)
+line 3: ,(,)
+line 3: NOTE(MI)
+line 3: ,(,)
+line 3: NOTE(DO)
+line 3: )())
+line 3: ;(;)
+line 4: IDENTIFIER(ding_dong)
+line 4: =(=)
+line 4: ((()
+line 4: NOTE(DO)
+line 4: ,(,)
+line 4: NOTE(SOL)
+line 4: ADD_OP(-)
+line 4: NUMBER(1)
+line 4: ,(,)
+line 4: FIGURE($)
+line 4: NOTE(DO)
+line 4: )())
+line 4: ;(;)
+line 6: TRACK(track)
+line 6: ((()
+line 7: IDENTIFIER(INSTRUMENT)
+line 7: =(=)
+line 7: INSTRUMENT(SYNTHPAD)
+line 7: ;(;)
+line 8: TEMPO(TEMPO)
+line 8: =(=)
+line 8: NUMBER(400)
+line 8: ;(;)
+line 9: LOOP(loop)
+line 9: NUMBER(10)
+line 9: {({)
+line 10: LOOP(loop)
+line 10: NUMBER(2)
+line 10: {({)
+line 11: IDENTIFIER(frere_jacques)
+line 12: }(})
+line 12: ;(;)
+line 13: LOOP(loop)
+line 13: NUMBER(2)
+line 13: {({)
+line 14: IDENTIFIER(dormez_vous)
+line 15: }(})
+line 15: ;(;)
+line 16: LOOP(loop)
+line 16: NUMBER(2)
+line 16: {({)
+line 17: IDENTIFIER(matines)
+line 18: }(})
+line 18: ;(;)
+line 19: LOOP(loop)
+line 19: NUMBER(2)
+line 19: {({)
+line 20: IDENTIFIER(ding_dong)
+line 21: }(})
+line 22: }(})
+line 23: )())
+```
+
 ## Parser
 
 Nous avons défini notre grammaire
@@ -265,6 +364,27 @@ def p_chansonnette_recursive(p):
     except:
         p[0] = AST.ChansonnetteNode(p[1])
 ```
+
+Voir le fichier `freres_jacques-ast.pdf` pour visualiser l'arbre syntaxique produit par l'exemple _Frère Jacques_.
+Voir le fichier `freres_jacques-ast-threaded.pdf` pour visualiser l'arbre syntaxique produit par l'exemple _Frère Jacques_ avec les coutures.
+
+
+## AST
+L'arbre syntaxique contient plusieurs types de noeuds. Chaque noeud hérite de `Node`. La liste des noeuds est la suivante :
+- `SongNode`, qui est le noeud racine de l'arbre
+- `InstructionNode`, qui est un container de tout ce qui peut se trouver dans une track
+- `InstrumentNode` qui définit un instrument
+- `GammeNode`, qui définit la gamme (octave) d'une note avec un opérateur et une valeur
+- `NoteNode`, qui contient une Note simple comme `DO`
+- `NotePlusPlus`, qui contient une note et des modificateurs comme par exemple une figure telle que `@` et/ou une gamme
+- `TokenNode`, qui contient un nombre ou un identifier
+- `TrackNode`, qui est un container
+- `ChansonnetteNode`, qui est un container
+- `AssignNode`, qui contient un identificateur et une ou plusieurs NotePlusPlus (ou notes)
+- `TempoNode`, qui contient un nombre qui correspond au tempo de la track
+- `TimeNode`, qui contient un nombre qui correspond au temps en millisecondes de la note qui précède
+- `SilenceNode`, qui contient un nombre qui correspond au temps en millisecondes d'un silence
+- `LoopNode`, qui contient un nombre qui sera le nombre de fois ou la boucle va itérer
 
 ## Compiler
 
@@ -315,10 +435,12 @@ FIGURES = {
 }
 ```
 
+Le fichier généré par le compiler est le fichier `.mid`. Ouvrez le fichier `frere_jacques.mid` avec un lecteur de musique compatible pour écouter l'exemple _Frère Jacques_.
+
 # Conclusion
 
 ## Etat du projet
-Le compilateurs est fonctionnel et il est possible d'écouter les fichiers audios générés. Nous avons par exemple pu écrire Frère Jacques.
+Le compilateurs est fonctionnel et il est possible d'écouter les fichiers audios générés. Nous avons par exemple pu écrire la célèbre chansonnette _Frère Jacques_.
 Toutes les fonctionnalités implémentés fonctionnent. Cependant les track débutent toutes en même temps, le format MIDI est prévu ainsi. Il est possible de palier à ce souci en ajoutant des silences au début d'une track à décaler.
 
 ## Améliorations possibles
