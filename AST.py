@@ -108,6 +108,7 @@ class InstrumentNode(Node):
 
 
 class GammeNode(Node):
+    """Represents a change in cctaves. Op is + or -."""
     type = 'GAMME'
 
     def __init__(self, children, op):
@@ -119,6 +120,7 @@ class GammeNode(Node):
 
 
 class NoteNode(Node):
+    """Represent a note (DO for example)."""
     type = 'NOTE'
 
     def __init__(self, note):
@@ -130,6 +132,7 @@ class NoteNode(Node):
 
 
 class NotePlusPlus(Node):
+    """Represents a note with modifiers, like a figure."""
     type = 'NOTEPP'
 
     def __init__(self, children, figure=''):
