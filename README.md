@@ -66,7 +66,6 @@ track(
 
 
 ## Grammar
-
 ```
 song -> partition | partition ; song
 partition -> track | assignation
@@ -86,6 +85,24 @@ notepp -> note | FIGURE note ADD_OP NUMBER | FIGURE note | note ADD_OP NUMBER
 instrument -> IDENTIFIER = INSTRUMENT
 ```
 
+## Requirements
+You need Python 3.6 or greater to use this programm. Also you need to have PLY and pydot modules.
+
+```
+pip install ply
+pip install pydot
+```
+
+## Usage
+Try with Frère Jacques mus file! 
+
+```
+python compiler.py tests_inputs\freres_jacques.mus
+```
+
+Don't care about warnings about unused TOKEN.
+If you have a warning about a generated folder, manually create a generated folder beside of the compiler.py file.
+
 ## Documentation
 - http://www.shikadi.net/moddingwiki/MID_Format
 - https://www.wavosaur.com/download/midi-note-hex.php
@@ -95,8 +112,6 @@ instrument -> IDENTIFIER = INSTRUMENT
 - https://www.csie.ntu.edu.tw/~r92092/ref/midi/
 - http://www.electronics.dit.ie/staff/tscarff/Music_technology/midi/midi_note_numbers_for_octaves.htm
 - http://www.ccarh.org/courses/253/handout/gminstruments/
-
-
 
 ## Authors
 - Piquerez Thibaut
