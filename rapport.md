@@ -152,15 +152,15 @@ TEMPO=1000
 Le numéro correspond au nombre de millisecondes que chaque note va durer.
 
 Pour pouvoir déterminer le temps du tempo en millisecondes il a fallut cacluler de la manière suivante:  
- > BPM = 120 (par défaut)  
+>BPM = 120 (par défaut)  
 PPQ = 1000 (c'est un choix -> plus facile pour calculer)  
 Si on mutliplie le BPM par le PPQ cela va nous donner le nombre de ticks par minute:  
 BPM \* PPQ = 120 \* 1000 = 120'000 ticks/minute = 2'000 ticks/seconde  
-Dans le format midi la valeur de durée de chaque note se compte en nombre de ticks. Donc avec les valeurs que nous avons ici cela signifie que si on mets 2'000 ticks pour une note, elle va durer 1 seconde. Ensuite pour pouvoir écrire les tempos en millisecondes il suffit de multipier par deux le chiffre qu'il y a dans le code.
+Dans le format midi la valeur de durée de chaque note se compte en nombre de ticks. Donc avec les valeurs que nous avons ici cela signifie que si on met 2'000 ticks pour une note, elle va durer 1 seconde. Ensuite pour pouvoir écrire les tempos en millisecondes il suffit de multiplier par deux le chiffre qu'il y a dans le code.
 
 
 ### Time
-Permet de modifie la durée d'une note.
+Permet de modifier la durée d'une note.
 ```
 LA;
 TIME=2000;
